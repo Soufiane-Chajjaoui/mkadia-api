@@ -1,0 +1,17 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /mkadia-api
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mkadia-db
+    username: postgres
+    password: soufianch
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
