@@ -1,0 +1,14 @@
+package fr.mkadia.mkadiaapi.dtos;
+
+
+import lombok.*;
+
+import java.util.Set;
+
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor @Builder
+public class RoleDTO {
+    private Long id;
+    private String label;
+    private Set<UserDTO> users;
+}

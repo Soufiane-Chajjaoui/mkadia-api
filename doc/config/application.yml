@@ -1,0 +1,35 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /mkadia-api
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mkadia-db
+    username: postgres
+    password: soufianch
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+    user: postgres
+    password: soufianch
+    baseline-description: "init migration"
+    baseline-version: 0
+  main:
+    allow-circular-references: true
+# elements of Security
+jwt:
+  secret: a7f4e2b1c8d5a3e1b6e8c4a5b6d8a3f5e1c6b4d8f5e1c3a7b1d878h7787e5g7u
+  expiration: 3600000 # 2 minutes
+  refresh-token:
+    expiration: 6600000 # 5 minutes
+
