@@ -2,6 +2,7 @@ package fr.mkadia.mkadiaapi.services.authentication;
 
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.User;
+import fr.mkadia.mkadiaapi.enums.TokenType;
 import fr.mkadia.mkadiaapi.exceptions.EntityExistedException;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.RoleMapper;
@@ -11,6 +12,7 @@ import fr.mkadia.mkadiaapi.models.AuthResponse;
 import fr.mkadia.mkadiaapi.repositories.UserRepository;
 import fr.mkadia.mkadiaapi.services.authorization.RoleService;
 import fr.mkadia.mkadiaapi.services.jwt.IJwtService;
+import fr.mkadia.mkadiaapi.services.jwt.ITokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +35,8 @@ public class AuthService implements IAuthService{
     private final IJwtService jwtService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final ITokenService tokenService;
+
     @Override
     public Optional<AuthResponse> login(AuthRequest authRequest) {
         authenticationManager.authenticate(
@@ -45,7 +49,9 @@ public class AuthService implements IAuthService{
                 .orElseThrow(()-> new EntityNotFoundException("Your Email not been Registered"));
 
         String accessToken = jwtService.generateToken(user);
+        tokenService.saveUserToken(user , accessToken , TokenType.ACCESS);
         String refreshToken = jwtService.generateRefreshToken(user);
+        tokenService.saveUserToken(user , refreshToken , TokenType.REFRESH);
 
         AuthResponse response = AuthResponse.builder()
                 .accessToken(accessToken)
@@ -59,7 +65,7 @@ public class AuthService implements IAuthService{
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             throw new EntityExistedException(STR."\{userDTO.getEmail()} has already registered");
         }
-        userDTO.setRoles(roleService.getRolesIsDefault().get());
+        userDTO.setRoles(roleService.getDefaultRoles().get());
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
         User userRegistered = userMapper.fromDTO(userDTO);

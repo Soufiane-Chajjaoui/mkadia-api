@@ -5,9 +5,11 @@ import fr.mkadia.mkadiaapi.entities.Role;
 import fr.mkadia.mkadiaapi.exceptions.EntityExistedException;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.RoleMapper;
+import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -16,21 +18,27 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class RoleService implements IRoleService{
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
     @Override
-    public Optional<RoleDTO> editRole(RoleDTO roleDTO) {
+    public Optional<ResponseOperation<RoleDTO>> editRole(RoleDTO roleDTO) {
         Optional<Role> role = Optional.ofNullable(roleMapper.fromDTO(roleDTO));
 
         role.get().setLabel(roleDTO.getLabel());
-        return Optional.ofNullable(roleMapper.fromEntity(roleRepository.save(role.get())));
+        return Optional.ofNullable(
+                ResponseOperation.<RoleDTO>builder()
+                        .object(roleMapper.fromEntity(roleRepository.save(role.get())))
+                        .message(STR."\{roleDTO.getLabel()} Has been Edited")
+                        .build()
+        );
     }
 
     @Override
-    public Optional<RoleDTO> addRole(RoleDTO roleDTO) {
+    public Optional<ResponseOperation<RoleDTO>> addRole(RoleDTO roleDTO) {
 
         Optional<Role> roleExisting = roleRepository.findFirstByLabelContainingOrderByLabelAsc(roleDTO.getLabel()) ;
 
@@ -41,7 +49,11 @@ public class RoleService implements IRoleService{
         Role role = roleMapper.fromDTO(roleDTO);
         role.setLabel(roleDTO.getLabel().toUpperCase());
 
-        return Optional.ofNullable(roleMapper.fromEntity(roleRepository.save(role)));
+        return Optional.ofNullable(
+                ResponseOperation.<RoleDTO>builder()
+                .object(roleMapper.fromEntity(roleRepository.save(role)))
+                .message(STR."\{roleDTO.getLabel()} Has been Added")
+                .build());
     }
 
     @Override
@@ -55,16 +67,19 @@ public class RoleService implements IRoleService{
         return Optional.ofNullable(roleMapper.fromEntity(role));
     }
     @Override
-    public Optional<Set<RoleDTO>> getRolesIsDefault(){
-        Set<Role> roles = roleRepository.findByIsDefaultTrue();
+    public Optional<Set<RoleDTO>> getDefaultRoles(){
+        Set<Role> roles = roleRepository.findAllByIsDefaultTrue();
         return Optional.of(roles.stream().map(roleMapper::fromEntity).collect(Collectors.toSet()));
     }
 
     @Override
-    public Optional<Boolean> deleteRole(Long idRole) {
+    public Optional<ResponseOperation<Boolean>> deleteRole(Long idRole) {
         try {
             roleRepository.deleteById(idRole);
-            return Optional.of(true);
+            return Optional.of(
+                    ResponseOperation.<Boolean>builder()
+                            .message("Role Has been Deleted").build()
+            );
         } catch (Exception e) {
             return Optional.empty();
         }

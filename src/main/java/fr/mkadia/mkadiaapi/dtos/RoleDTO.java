@@ -10,5 +10,6 @@ import java.util.Set;
 public class RoleDTO {
     private Long id;
     private String label;
+    private Boolean isDefault;
     private Set<UserDTO> users;
 }

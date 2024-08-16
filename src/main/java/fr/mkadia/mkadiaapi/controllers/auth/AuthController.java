@@ -1,4 +1,4 @@
-package fr.mkadia.mkadiaapi.controllers.user;
+package fr.mkadia.mkadiaapi.controllers.auth;
 
 
 import fr.mkadia.mkadiaapi.dtos.UserDTO;

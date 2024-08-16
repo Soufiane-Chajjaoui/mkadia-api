@@ -96,8 +96,9 @@ public class JwtService implements IJwtService {
     @Override
     public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
         long expirationTimeMillis = System.currentTimeMillis() + expiration;
-        System.out.println(STR."Expiration Time: \{new Date(expirationTimeMillis)}");
+        log.info(STR."Expiration Time: \{new Date(expirationTimeMillis)}");
 
+        log.info(String.valueOf(expiration));
         return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(expirationTimeMillis))

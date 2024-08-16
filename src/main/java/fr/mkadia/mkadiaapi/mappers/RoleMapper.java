@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.mappers;
 
+import ch.qos.logback.classic.spi.LoggingEventVO;
 import fr.mkadia.mkadiaapi.dtos.RoleDTO;
 import fr.mkadia.mkadiaapi.entities.Role;
 import org.mapstruct.Mapper;
