@@ -5,10 +5,12 @@ import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.enums.TokenType;
 import fr.mkadia.mkadiaapi.exceptions.EntityExistedException;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
-import fr.mkadia.mkadiaapi.mappers.RoleMapper;
+import fr.mkadia.mkadiaapi.exceptions.PasswordIncorrectException;
 import fr.mkadia.mkadiaapi.mappers.UserMapper;
 import fr.mkadia.mkadiaapi.models.AuthRequest;
 import fr.mkadia.mkadiaapi.models.AuthResponse;
+import fr.mkadia.mkadiaapi.models.PasswordRequest;
+import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.UserRepository;
 import fr.mkadia.mkadiaapi.services.authorization.RoleService;
 import fr.mkadia.mkadiaapi.services.jwt.IJwtService;
@@ -17,17 +19,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthService implements IAuthService{
+public class AuthService implements IAuthService {
 
     private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
@@ -41,17 +41,17 @@ public class AuthService implements IAuthService{
     public Optional<AuthResponse> login(AuthRequest authRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authRequest.getEmail() ,
+                        authRequest.getEmail(),
                         authRequest.getPassword()
                 )
         );
         User user = userRepository.findByEmail(authRequest.getEmail())
-                .orElseThrow(()-> new EntityNotFoundException("Your Email not been Registered"));
+                .orElseThrow(() -> new EntityNotFoundException("Your Email not been Registered"));
 
         String accessToken = jwtService.generateToken(user);
-        tokenService.saveUserToken(user , accessToken , TokenType.ACCESS);
+        tokenService.saveUserToken(user, accessToken, TokenType.ACCESS);
         String refreshToken = jwtService.generateRefreshToken(user);
-        tokenService.saveUserToken(user , refreshToken , TokenType.REFRESH);
+        tokenService.saveUserToken(user, refreshToken, TokenType.REFRESH);
 
         AuthResponse response = AuthResponse.builder()
                 .accessToken(accessToken)
@@ -72,5 +72,21 @@ public class AuthService implements IAuthService{
         log.info(userDTO.getPhone());
         userRepository.save(userRegistered);
         return Optional.ofNullable(AuthResponse.builder().message("Has Been Registered").build());
+    }
+
+    @Override
+    public Optional<ResponseOperation<String>> changePassword(Long idUser, PasswordRequest passwordRequest) {
+        if (passwordRequest.getNewPassword().equals(passwordRequest.getConfirmationPassword())) {
+
+            User user = userRepository.findById(idUser)
+                    .orElseThrow(() -> new EntityNotFoundException("User Not FOUND"));
+            if (passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+                userRepository.save(user);
+                return Optional.of(ResponseOperation.<String>builder().message("Your Password Has Been Updated").build());
+            }
+        }
+        throw new PasswordIncorrectException("Password is Not Correct ,Please Provide Correct Password");
+
     }
 }
