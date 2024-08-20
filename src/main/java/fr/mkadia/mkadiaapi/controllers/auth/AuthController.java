@@ -6,16 +6,23 @@ import fr.mkadia.mkadiaapi.models.AuthRequest;
 import fr.mkadia.mkadiaapi.models.AuthResponse;
 import fr.mkadia.mkadiaapi.models.PasswordRequest;
 import fr.mkadia.mkadiaapi.services.authentication.IAuthService;
+import fr.mkadia.mkadiaapi.services.jwt.ITokenService;
+import fr.mkadia.mkadiaapi.services.jwt.TokenService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final IAuthService authService;
+    private final ITokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
@@ -34,4 +41,10 @@ public class AuthController {
 
         return ResponseEntity.of(authService.changePassword(id, passwordRequest));
     }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        return ResponseEntity.of(tokenService.refreshToken(request, response));
+    }
+
 }
