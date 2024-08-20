@@ -59,13 +59,14 @@ public class AuthFilterService extends OncePerRequestFilter {
 
             log.error(e.getMessage());
             log.info(STR."Token-Type ::\{tokenType}       \{TokenType.ACCESS.name()}");
-            responseWrapper.setStatus(HttpStatus.UNAUTHORIZED.value());
+            responseWrapper.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
 
-            if (Objects.equals(tokenType, TokenType.ACCESS.name())) {
-                responseWrapper.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
+            if (Objects.equals(tokenType, TokenType.REFRESH.name())) {
+                responseWrapper.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
 
             filterChain.doFilter(request, responseWrapper);
+            return;
         }
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null){
 
