@@ -46,6 +46,9 @@ public class SecurityConfig {
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(filterService , UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider)
+                .exceptionHandling(
+                        e -> e.authenticationEntryPoint(customEntryPointHandler)
+                )
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutService)
