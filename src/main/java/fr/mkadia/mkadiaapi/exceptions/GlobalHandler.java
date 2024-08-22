@@ -86,4 +86,16 @@ public class GlobalHandler {
         errorDetails.setProperty("message" , "Password is Not match previous password");
         return errorDetails;
     }
+
+    @ExceptionHandler(VerificationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ResponseError> handleVerificationOtp(VerificationException e){
+        ResponseError responseError = ResponseError.builder().message(e.getMessage())
+                .debugMessage(e.getLocalizedMessage())
+                .success(false)
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+    }
 }
