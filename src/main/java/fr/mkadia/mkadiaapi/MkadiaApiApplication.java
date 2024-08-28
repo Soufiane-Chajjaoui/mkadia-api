@@ -2,10 +2,7 @@ package fr.mkadia.mkadiaapi;
 
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.Role;
-import fr.mkadia.mkadiaapi.entities.User;
-import fr.mkadia.mkadiaapi.mappers.RoleMapper;
 import fr.mkadia.mkadiaapi.repositories.RoleRepository;
-import fr.mkadia.mkadiaapi.repositories.UserRepository;
 import fr.mkadia.mkadiaapi.services.authentication.AuthService;
 import fr.mkadia.mkadiaapi.services.authorization.RoleService;
 import org.springframework.boot.CommandLineRunner;
@@ -29,7 +26,7 @@ public class MkadiaApiApplication {
             roleRepository.save(Role.builder().label("USER").isDefault(true).build());
             authService.registerUser(
                     UserDTO.builder()
-                            .email("schajjoui@gmail.com")
+                            .email("schajjaoui2003@gmail.com")
                             .phone("+61734994")
                             .password("password")
                             .lastName("chajjaoui")

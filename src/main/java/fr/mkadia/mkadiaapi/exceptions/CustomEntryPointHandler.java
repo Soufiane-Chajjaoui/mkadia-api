@@ -35,7 +35,7 @@ public class CustomEntryPointHandler implements AuthenticationEntryPoint {
             responseBody.put("error", "Moved");
             responseBody.put("redirect", "http://localhost:8888/**/refresh-token");
         } else if (response.getStatus() == 403) {
-            responseBody.put("message", STR."\{authException.getMessage()}Your token Has Revoked");
+            responseBody.put("message", STR."\{authException.getMessage()} Your token Has Revoked");
             responseBody.put("error", "unauthorized");
         } else {
             responseBody.put("message", authException.getMessage());

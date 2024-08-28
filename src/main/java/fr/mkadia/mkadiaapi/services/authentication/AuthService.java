@@ -7,10 +7,7 @@ import fr.mkadia.mkadiaapi.exceptions.EntityExistedException;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.exceptions.PasswordIncorrectException;
 import fr.mkadia.mkadiaapi.mappers.UserMapper;
-import fr.mkadia.mkadiaapi.models.AuthRequest;
-import fr.mkadia.mkadiaapi.models.AuthResponse;
-import fr.mkadia.mkadiaapi.models.PasswordRequest;
-import fr.mkadia.mkadiaapi.models.ResponseOperation;
+import fr.mkadia.mkadiaapi.models.*;
 import fr.mkadia.mkadiaapi.repositories.UserRepository;
 import fr.mkadia.mkadiaapi.services.authorization.RoleService;
 import fr.mkadia.mkadiaapi.services.jwt.IJwtService;
@@ -75,10 +72,10 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public Optional<ResponseOperation<String>> changePassword(Long idUser, PasswordRequest passwordRequest) {
+    public Optional<ResponseOperation<String>> changePassword(String mail, PasswordRequest passwordRequest) {
         if (passwordRequest.getNewPassword().equals(passwordRequest.getConfirmationPassword())) {
 
-            User user = userRepository.findById(idUser)
+            User user = userRepository.findByEmail(passwordRequest.getEmail())
                     .orElseThrow(() -> new EntityNotFoundException("User Not FOUND"));
             if (passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
@@ -88,5 +85,18 @@ public class AuthService implements IAuthService {
         }
         throw new PasswordIncorrectException("Password is Not Correct ,Please Provide Correct Password");
 
+    }
+    @Override
+    public void changeResetPassword(PasswordRequest passwordRequest) {
+        if (passwordRequest.getNewPassword().equals(passwordRequest.getConfirmationPassword())) {
+            User user = userRepository.findByEmail(passwordRequest.getEmail())
+                    .orElseThrow(() -> new EntityNotFoundException("User Not FOUND"));
+
+            user.setPassword(
+                    passwordEncoder.encode(passwordRequest.getNewPassword())
+            );
+            userRepository.save(user);
+            tokenService.revokeTokens(user);
+        }else throw new PasswordIncorrectException("Password is Not Correct ,Please Provide Correct Password");
     }
 }

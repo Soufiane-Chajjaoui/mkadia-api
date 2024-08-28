@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.services.jwt;
 
+import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.enums.TokenType;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,4 +18,6 @@ public interface ITokenService {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException;
+
+    UserDTO tokenVerify(String token);
 }
