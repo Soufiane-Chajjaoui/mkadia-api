@@ -5,17 +5,22 @@ import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.models.AuthRequest;
 import fr.mkadia.mkadiaapi.models.AuthResponse;
 import fr.mkadia.mkadiaapi.models.PasswordRequest;
+import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.services.authentication.IAuthService;
 import fr.mkadia.mkadiaapi.services.jwt.ITokenService;
-import fr.mkadia.mkadiaapi.services.jwt.TokenService;
+import fr.mkadia.mkadiaapi.services.mail.MailService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -23,6 +28,7 @@ import java.io.IOException;
 public class AuthController {
     private final IAuthService authService;
     private final ITokenService tokenService;
+    private final MailService mailService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
@@ -36,10 +42,9 @@ public class AuthController {
 
     @PreAuthorize("hasRole('USER')")
     @PatchMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestParam(required = true, name = "id") Long id
-            , @RequestBody PasswordRequest passwordRequest) {
+    public ResponseEntity<?> changePassword(@RequestBody PasswordRequest passwordRequest) {
 
-        return ResponseEntity.of(authService.changePassword(id, passwordRequest));
+        return ResponseEntity.of(authService.changePassword(passwordRequest.getEmail(), passwordRequest));
     }
 
     @PostMapping("/refresh-token")
@@ -47,4 +52,37 @@ public class AuthController {
         return ResponseEntity.of(tokenService.refreshToken(request, response));
     }
 
+    @PostMapping(value = "/forget-password",
+    consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseOperation<String>> processForgetPassword(@ModelAttribute PasswordRequest passwordRequest) throws UnknownHostException, MessagingException {
+        mailService.sendResetPasswordEmail(passwordRequest.getEmail());
+        return ResponseEntity.ok().body(ResponseOperation.<String>builder()
+                .message("Mail Has Been Sent , Please Check-out .")
+                .build()
+        );
+    }
+
+    @GetMapping("/reset-password")
+    public ResponseEntity<ResponseOperation<UserDTO>> resetPassword(@RequestParam(name = "reset-token") String token){
+        return ResponseEntity.ok().body(
+                ResponseOperation.<UserDTO>builder()
+                        .object(tokenService.tokenVerify(token))
+                        .message("Token is Valid")
+                        .build()
+        );
+    }
+    @PatchMapping(value = "/change-reset-password",
+    consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE ,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ResponseOperation<String>> changeResetPassword(@ModelAttribute PasswordRequest resetPassword){
+        authService.changeResetPassword(resetPassword);
+
+        return ResponseEntity.ok().body(
+                ResponseOperation.<String>builder()
+                        .message("Your Password has been Updated")
+                        .build()
+        );
+    }
 }

@@ -26,10 +26,34 @@ spring:
     baseline-version: 0
   main:
     allow-circular-references: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: schajjaoui@gmail.com
+    password: ekwm vcok zytr iinu
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+            protocols: TLSv1.2
+          auth: true
+        debug: true
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG # or trace
+
 # elements of Security
 jwt:
   secret: a7f4e2b1c8d5a3e1b6e8c4a5b6d8a3f5e1c6b4d8f5e1c3a7b1d878h7787e5g7u
   expiration: 60000 # 5 minutes
   refresh-token:
     expiration: 600000 # 10 minutes
+  reset-token:
+    expiration: 1800000
 

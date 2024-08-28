@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.services.jwt;
 
+import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.Token;
 import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.enums.TokenType;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,6 +40,8 @@ public class TokenService implements ITokenService {
         });
         tokenRepository.saveAll(tokensValide);
     }
+
+
 
     @Override
     public void saveUserToken(User user, String jwtoken, TokenType tokentype) {
@@ -88,6 +92,18 @@ public class TokenService implements ITokenService {
         return Optional.ofNullable(new HashMap<>().put("message" , "Your Session Expired :("));
     }
 
+    @Override
+    public UserDTO tokenVerify(String jwt) {
+
+        String email = jwtService.extractUsername(jwt);
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        boolean isTokenValid = tokenRepository.findByToken(jwt).map(t -> !t.isRevoked() && !t.isExpired())
+                .orElse(false);
+        if (isTokenValid){
+            return UserDTO.builder().email(user.getEmail()).build();
+        } else throw new AccessDeniedException("You're not allow to procedure this action");
+    }
 
 
 }

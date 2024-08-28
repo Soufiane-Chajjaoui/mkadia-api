@@ -53,15 +53,20 @@ public class AuthFilterService extends OncePerRequestFilter {
         var isTokenValid = tokenRepository.findByToken(jwt).map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
         log.info(String.valueOf(isTokenValid));
 
+        if (!isTokenValid) {
+            responseWrapper.setStatus(HttpStatus.FORBIDDEN.value());
+            filterChain.doFilter(request, responseWrapper);
+            return;
+        }
         try {
             email = jwtService.extractUsername(jwt);
         } catch (ExpiredJwtException e) {
 
             log.error(e.getMessage());
-            log.info(STR."Token-Type ::\{tokenType}       \{TokenType.ACCESS.name()}");
+            log.info(STR."Token-Type ::\{tokenType}");
             responseWrapper.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
 
-            if (Objects.equals(tokenType, TokenType.REFRESH.name())) {
+            if (Objects.equals(tokenType, TokenType.REFRESH.name()) || Objects.equals(tokenType, TokenType.RESET.name())  ) {
                 responseWrapper.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
 

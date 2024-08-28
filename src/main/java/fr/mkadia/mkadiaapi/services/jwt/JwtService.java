@@ -7,7 +7,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,9 +29,8 @@ public class JwtService implements IJwtService {
     private long refreshExpiration;
     @Value("${jwt.expiration}")
     private long jwtExpiration;
-
-
-
+    @Value("${jwt.reset-token.expiration}")
+    private long resetExpiration;
 
 
     @Override
@@ -61,20 +59,35 @@ public class JwtService implements IJwtService {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
+        List<String> rolesExtracted = this.extractRoles(userDetails);
+        claims.put("roles", rolesExtracted);
+        return buildToken(claims, userDetails, this.jwtExpiration);
+    }
+
+    @Override
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(new HashMap<>(), userDetails, this.refreshExpiration);
+    }
+
+    @Override
+    public String generateResetToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+
+        List<String> rolesExtracted = this.extractRoles(userDetails);
+        claims.put("roles", rolesExtracted);
+        return buildToken(claims, userDetails, this.resetExpiration);
+    }
+
+    @Override
+    public List<String> extractRoles(UserDetails userDetails) {
         Optional<Set<Role>> roles = Optional.of(
                 Optional.ofNullable(((User) userDetails).getRoles())
                         .orElse(Set.of(Role.builder().id(1L).build()))
         );
 
-        List<String> rolesExtracted = roles.get().stream()
+        return roles.get().stream()
                 .map(Role::getLabel)
                 .toList();
-        claims.put("roles", rolesExtracted);
-        return buildToken(claims, userDetails , this.jwtExpiration);
-    }
-    @Override
-    public String generateRefreshToken(UserDetails userDetails){
-        return buildToken(new HashMap<>() , userDetails , this.refreshExpiration);
     }
 
     @Override

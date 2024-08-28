@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -16,6 +17,10 @@ public interface IJwtService {
     public String generateToken(UserDetails userDetails);
 
     String generateRefreshToken(UserDetails userDetails);
+
+    String generateResetToken(UserDetails userDetails);
+
+    List<String> extractRoles(UserDetails userDetails);
 
     public boolean isTokenValid(String token , UserDetails userDetails);
     public boolean isTokenExpired(String token) ;

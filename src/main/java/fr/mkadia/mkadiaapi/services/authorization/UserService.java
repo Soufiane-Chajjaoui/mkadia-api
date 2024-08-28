@@ -66,4 +66,11 @@ public class UserService implements IUserService{
                         .fromEntity(user)).message("Roles has Been assigned").build()
         );
     }
+
+    @Override
+    public Optional<User> getUserByEmail(String email){
+
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("This email not registered ou incorrect"));
+        return Optional.of(user);
+    }
 }

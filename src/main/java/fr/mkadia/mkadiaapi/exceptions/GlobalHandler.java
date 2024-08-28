@@ -2,6 +2,7 @@ package fr.mkadia.mkadiaapi.exceptions;
 
 import fr.mkadia.mkadiaapi.models.ResponseError;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -62,9 +63,9 @@ public class GlobalHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
+    @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ProblemDetail handleJwtException(ExpiredJwtException ex) {
+    public ProblemDetail handleJwtException(JwtException ex) {
         ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED , ex.getMessage());
         errorDetails.setProperty("message" , "Your Session Has Expired, Go to Authentication Page");
         errorDetails.setTitle("Expiration SESSION");
