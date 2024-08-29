@@ -1,11 +1,7 @@
 package fr.mkadia.mkadiaapi.controllers.auth;
 
-
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
-import fr.mkadia.mkadiaapi.models.AuthRequest;
-import fr.mkadia.mkadiaapi.models.AuthResponse;
-import fr.mkadia.mkadiaapi.models.PasswordRequest;
-import fr.mkadia.mkadiaapi.models.ResponseOperation;
+import fr.mkadia.mkadiaapi.models.*;
 import fr.mkadia.mkadiaapi.services.authentication.IAuthService;
 import fr.mkadia.mkadiaapi.services.jwt.ITokenService;
 import fr.mkadia.mkadiaapi.services.mail.MailService;
@@ -20,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -31,8 +26,14 @@ public class AuthController {
     private final MailService mailService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<ResponseOperation<String>> login(@RequestBody AuthRequest authRequest) {
         return ResponseEntity.of(authService.login(authRequest));
+    }
+    @PostMapping(value = "/check-verification",
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AuthResponse> checkVerification(@ModelAttribute CodeOTP codeOTP){
+        return ResponseEntity.of(authService.checkVerification(codeOTP));
     }
 
     @PostMapping("/register")

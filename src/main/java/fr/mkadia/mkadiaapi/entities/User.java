@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users" , uniqueConstraints = {
-        @UniqueConstraint(name = "UniquePhoneNumber" , columnNames = {"email"})
+        @UniqueConstraint(name = "UniqueEmail&Phone" , columnNames = {"email" , "phone"})
 })
 @AllArgsConstructor
 @NoArgsConstructor

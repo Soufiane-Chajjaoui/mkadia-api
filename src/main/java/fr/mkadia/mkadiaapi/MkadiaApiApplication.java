@@ -27,7 +27,7 @@ public class MkadiaApiApplication {
             authService.registerUser(
                     UserDTO.builder()
                             .email("schajjaoui2003@gmail.com")
-                            .phone("+61734994")
+                            .phone("+212607025329")
                             .password("password")
                             .lastName("chajjaoui")
                             .firstName("soufiane")
