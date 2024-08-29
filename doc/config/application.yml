@@ -47,6 +47,17 @@ logging:
     org:
       springframework:
         security: DEBUG # or trace
+# SMS Gateway
+twilio:
+  account:
+    sid: AC3737a04a833c08f487ed1a6f891a4cff
+  auth:
+    token: 9fe0f5a7bd5635da621d45dcd8c316a1
+  phone:
+    number: +12513158452
+  service:
+    friendly_name: Mkadia-2F
+    ssid: VA1483888b36abf62836ae4f21ccac3697
 
 # elements of Security
 jwt:

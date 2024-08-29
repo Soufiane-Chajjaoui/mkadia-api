@@ -104,6 +104,12 @@
             <artifactId>flyway-database-postgresql</artifactId>
             <version>${postgres.flyway.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>10.4.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
