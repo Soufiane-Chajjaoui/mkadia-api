@@ -67,4 +67,10 @@ jwt:
     expiration: 600000 # 10 minutes
   reset-token:
     expiration: 1800000
-
+app:
+  clients:
+    ips:
+      - name: web-client
+        ip: http://localhost:4200
+      - name: flutter-client
+        ip: http://localhost:5000
