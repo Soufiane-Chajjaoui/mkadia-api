@@ -1,6 +1,0 @@
-spring:
-  config:
-    import: file:D:/Projets-Prof/mkadia/mkadia-api/doc/config/application.yml
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
