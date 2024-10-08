@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.controllers.auth;
 
+import fr.mkadia.mkadiaapi.config.ClientProperties;
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.models.*;
 import fr.mkadia.mkadiaapi.services.authentication.IAuthService;
@@ -9,6 +10,8 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -24,6 +30,7 @@ public class AuthController {
     private final IAuthService authService;
     private final ITokenService tokenService;
     private final MailService mailService;
+    private final ClientProperties clientProperties;
 
     @PostMapping("/login")
     public ResponseEntity<ResponseOperation<String>> login(@RequestBody AuthRequest authRequest) {
@@ -66,9 +73,12 @@ public class AuthController {
 
     @GetMapping("/reset-password")
     public ResponseEntity<ResponseOperation<UserDTO>> resetPassword(@RequestParam(name = "reset-token") String token){
-        return ResponseEntity.ok().body(
-                ResponseOperation.<UserDTO>builder()
-                        .object(tokenService.tokenVerify(token))
+
+        UserDTO user = tokenService.tokenVerify(token);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseOperation.<UserDTO>builder()
+                        .object(user)
                         .message("Token is Valid")
                         .build()
         );
@@ -79,6 +89,7 @@ public class AuthController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ResponseOperation<String>> changeResetPassword(@ModelAttribute PasswordRequest resetPassword){
         authService.changeResetPassword(resetPassword);
+
 
         return ResponseEntity.ok().body(
                 ResponseOperation.<String>builder()

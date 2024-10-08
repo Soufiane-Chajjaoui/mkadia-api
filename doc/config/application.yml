@@ -72,5 +72,5 @@ app:
     ips:
       - name: web-client
         ip: http://localhost:4200
-      - name: flutter-client
+      - name: mobile-client
         ip: http://localhost:5000

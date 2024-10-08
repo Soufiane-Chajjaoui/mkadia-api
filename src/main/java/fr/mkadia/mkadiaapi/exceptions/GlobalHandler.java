@@ -27,7 +27,7 @@ public class GlobalHandler {
     public ProblemDetail handleAuthenticationException(AuthenticationException e){
         if (e instanceof BadCredentialsException){
             ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED , e.getMessage());
-            errorDetails.setProperty("message" , e.getMessage());
+            errorDetails.setProperty("message" , "Your email or password incorrect. Please ");
             return errorDetails;
         }
         return null;

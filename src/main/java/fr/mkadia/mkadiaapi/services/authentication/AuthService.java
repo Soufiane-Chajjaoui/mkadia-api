@@ -62,6 +62,7 @@ public class AuthService implements IAuthService {
         this.sendVerification(user.getPhone());
         ResponseOperation<String> response = ResponseOperation.<String>builder()
                 .message("has been Send Verification Code")
+                .object(user.getPhone())
                 .build();
         return Optional.ofNullable(response);
     }
@@ -82,7 +83,7 @@ public class AuthService implements IAuthService {
 
     @Override
     public Optional<ResponseOperation<String>> changePassword(String mail, PasswordRequest passwordRequest) {
-        if (passwordRequest.getNewPassword().equals(passwordRequest.getConfirmationPassword())) {
+        if (passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword())) {
 
             User user = userRepository.findByEmail(passwordRequest.getEmail())
                     .orElseThrow(() -> new EntityNotFoundException("User Not FOUND"));
@@ -98,7 +99,7 @@ public class AuthService implements IAuthService {
 
     @Override
     public void changeResetPassword(PasswordRequest passwordRequest) {
-        if (passwordRequest.getNewPassword().equals(passwordRequest.getConfirmationPassword())) {
+        if (passwordRequest.getNewPassword().equals(passwordRequest.getConfirmPassword())) {
             User user = userRepository.findByEmail(passwordRequest.getEmail())
                     .orElseThrow(() -> new EntityNotFoundException("User Not FOUND"));
 

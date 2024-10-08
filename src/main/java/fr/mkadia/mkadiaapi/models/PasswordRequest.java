@@ -16,5 +16,5 @@ public class PasswordRequest {
 //    @NotEmpty(message = "New Password is required")
     private String newPassword;
 //    @NotEmpty(message = "Confirm Password is required")
-    private String confirmationPassword;
+    private String confirmPassword;
 }

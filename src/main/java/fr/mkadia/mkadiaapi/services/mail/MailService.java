@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.services.mail;
 
+import fr.mkadia.mkadiaapi.config.ClientProperties;
 import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.enums.TokenType;
 import fr.mkadia.mkadiaapi.helpers.UrlService;
@@ -28,14 +29,16 @@ public class MailService {
     private final TokenService tokenService;
     private final IJwtService jwtService;
     private UrlService urlService;
+    private final ClientProperties clientProperties;
 
     @Autowired
-    public MailService(JavaMailSender mailSender , UserService userService , TokenService tokenService , IJwtService jwtService , UrlService urlService) {
+    public MailService(JavaMailSender mailSender , UserService userService , TokenService tokenService , IJwtService jwtService , UrlService urlService , ClientProperties clientProperties) {
         this.mailSender = mailSender;
         this.userService = userService;
         this.tokenService = tokenService;
         this.jwtService = jwtService;
         this.urlService = urlService;
+        this.clientProperties = clientProperties;
     }
 
     public void sendResetPasswordEmail(String to) throws UnknownHostException, MessagingException {
@@ -55,7 +58,14 @@ public class MailService {
     }
 
     private String getContent(String resetToken, User user) throws UnknownHostException {
-        String urlWithResetToken = String.format("%s/api/v1/auth/reset-password?reset-token=%s", urlService.getBaseUrl() ,resetToken);
+
+        String webClientIpAddress = clientProperties.getIps().stream()
+                .filter(client -> "web-client".equals(client.getName()))
+                .map(ClientProperties.Client::getIp)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Client 'web-client' not found"));
+
+        String urlWithResetToken = String.format("%s/auth/reset/change-password?reset-token=%s", webClientIpAddress ,resetToken);
 
         String contentTemplate = "<p>Hi <i style='text-transform: uppercase;'>%s</i>,</p>" +
                 "<p>You have requested to reset your password.</p>" +
