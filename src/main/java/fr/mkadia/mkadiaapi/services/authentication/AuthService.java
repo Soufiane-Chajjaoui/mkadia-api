@@ -50,7 +50,7 @@ public class AuthService implements IAuthService {
 
 
     @Override
-    public Optional<ResponseOperation<String>> login(AuthRequest authRequest) {
+    public Optional<ResponseOperation<?>> login(AuthRequest authRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getEmail(),
@@ -59,6 +59,13 @@ public class AuthService implements IAuthService {
         );
         User user = userRepository.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Your Email not been Registered"));
+        if (!user.isUsing2FA()){
+            return Optional.ofNullable(
+                    ResponseOperation.<Object>builder()
+                            .object(this.getAuthResponse(user).get())
+                            .message("has Been Login :D")
+                            .build());
+        }
         this.sendVerification(user.getPhone());
         ResponseOperation<String> response = ResponseOperation.<String>builder()
                 .message("has been Send Verification Code")
@@ -67,6 +74,15 @@ public class AuthService implements IAuthService {
         return Optional.ofNullable(response);
     }
 
+    private Optional<AuthResponse> getAuthResponse(User user){
+        String accessToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        return Optional.ofNullable(AuthResponse.builder()
+                .refreshToken(refreshToken)
+                .accessToken(accessToken)
+                .message("You're successfully authenticated")
+                .build());
+    }
     @Override
     public Optional<AuthResponse> registerUser(UserDTO userDTO) {
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
@@ -150,6 +166,7 @@ public class AuthService implements IAuthService {
         } catch (Exception e) {
             throw new VerificationException("Code OTP Not Valid");
         }
-
     }
+
+
 }

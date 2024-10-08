@@ -36,6 +36,8 @@ public class User implements UserDetails {
     private String email;
     @Column(name = "password_hash")
     private String password;
+    @Column(name = "enable_two_factor" , columnDefinition = "boolean default false")
+    private boolean isUsing2FA;
 
     @Column(name = "phone" , nullable = false , length = 15)
     private String phone;
