@@ -1,6 +1,7 @@
 package fr.mkadia.mkadiaapi.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,13 +44,15 @@ public class User implements UserDetails {
     private String phone;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    @JsonIgnore
+    private Set<Token> tokens;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

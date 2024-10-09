@@ -15,4 +15,6 @@ public interface IAuthService {
     ResponseMessage sendVerification(String to);
 
     Optional<AuthResponse> checkVerification(CodeOTP codeOTP);
+
+    Optional<ResponseOperation<UserDTO>> getCurrentUser();
 }
