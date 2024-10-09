@@ -4,6 +4,7 @@ import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.User;
+import fr.mkadia.mkadiaapi.enums.TokenType;
 import fr.mkadia.mkadiaapi.exceptions.EntityExistedException;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.exceptions.PasswordIncorrectException;
@@ -17,14 +18,19 @@ import fr.mkadia.mkadiaapi.services.jwt.ITokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 @Slf4j
 public class AuthService implements IAuthService {
     @Value("${twilio.service.ssid}")
@@ -50,7 +56,7 @@ public class AuthService implements IAuthService {
 
 
     @Override
-    public Optional<ResponseOperation<String>> login(AuthRequest authRequest) {
+    public Optional<ResponseOperation<?>> login(AuthRequest authRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getEmail(),
@@ -59,6 +65,13 @@ public class AuthService implements IAuthService {
         );
         User user = userRepository.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException("Your Email not been Registered"));
+        if (!user.isUsing2FA()){
+            return Optional.ofNullable(
+                    ResponseOperation.<Object>builder()
+                            .object(this.getAuthResponse(user).get())
+                            .message("has Been Login :D")
+                            .build());
+        }
         this.sendVerification(user.getPhone());
         ResponseOperation<String> response = ResponseOperation.<String>builder()
                 .message("has been Send Verification Code")
@@ -67,6 +80,17 @@ public class AuthService implements IAuthService {
         return Optional.ofNullable(response);
     }
 
+    private Optional<AuthResponse> getAuthResponse(User user){
+        String accessToken = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        this.tokenService.saveUserToken(user , accessToken , TokenType.ACCESS);
+        this.tokenService.saveUserToken(user , refreshToken , TokenType.REFRESH);
+        return Optional.ofNullable(AuthResponse.builder()
+                .refreshToken(refreshToken)
+                .accessToken(accessToken)
+                .message("You're successfully authenticated")
+                .build());
+    }
     @Override
     public Optional<AuthResponse> registerUser(UserDTO userDTO) {
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
@@ -126,7 +150,6 @@ public class AuthService implements IAuthService {
     @Override
     public Optional<AuthResponse> checkVerification(CodeOTP codeOTP) {
 
-        log.info(codeOTP.getCode() + codeOTP.getTo());
         User user = userRepository.findByEmail(codeOTP.getTo())
                 .orElseThrow(() -> new EntityNotFoundException("User Not FOUND"));
         try {
@@ -137,19 +160,31 @@ public class AuthService implements IAuthService {
 
             log.info(verificationCheck.getValid().toString());
             if (verificationCheck.getValid()) {
-                String accessToken = jwtService.generateToken(user);
-                String refreshToken = jwtService.generateRefreshToken(user);
-                return Optional.ofNullable(AuthResponse.builder()
-                        .refreshToken(refreshToken)
-                        .accessToken(accessToken)
-                        .message("You're successfully authenticated")
-                        .build()
-                );
+                return this.getAuthResponse(user);
             }else throw new VerificationException("Code OTP Not Valid");
 
         } catch (Exception e) {
             throw new VerificationException("Code OTP Not Valid");
         }
-
     }
+
+    @Override
+    public Optional<ResponseOperation<UserDTO>> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user = (User) authentication.getPrincipal();
+        return
+                Optional.of(
+                        ResponseOperation.<UserDTO>builder()
+                                .message("Current User with essentials Credentials")
+                                .object(
+                                        UserDTO.builder()
+                                                .email(user.getEmail())
+                                                .firstName(user.getFirstName())
+                                                .lastName(user.getLastName())
+                                                .build()
+                                ).build());
+    }
+
+
 }

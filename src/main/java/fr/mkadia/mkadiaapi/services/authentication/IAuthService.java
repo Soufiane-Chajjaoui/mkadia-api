@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface IAuthService {
 
-    Optional<ResponseOperation<String>> login(AuthRequest authRequestDTO) ;
+    Optional<ResponseOperation<?>> login(AuthRequest authRequestDTO) ;
     Optional<AuthResponse> registerUser(UserDTO UserDTO);
     Optional<ResponseOperation<String>> changePassword(String idUser, PasswordRequest passwordRequest);
     void changeResetPassword(PasswordRequest passwordRequest);
@@ -15,4 +15,6 @@ public interface IAuthService {
     ResponseMessage sendVerification(String to);
 
     Optional<AuthResponse> checkVerification(CodeOTP codeOTP);
+
+    Optional<ResponseOperation<UserDTO>> getCurrentUser();
 }
