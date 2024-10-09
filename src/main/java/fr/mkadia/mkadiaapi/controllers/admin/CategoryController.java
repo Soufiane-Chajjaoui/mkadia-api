@@ -26,4 +26,9 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> getCategory(@PathVariable Long id){
         return ResponseEntity.of(categoryService.getCategory(id));
     }
+
+    @PostMapping
+    public ResponseEntity<CategoryDTO> addCategory(@RequestBody CategoryDTO categoryDTO){
+        return ResponseEntity.of(categoryService.addCategory(categoryDTO));
+    }
 }

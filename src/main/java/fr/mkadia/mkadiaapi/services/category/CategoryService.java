@@ -47,4 +47,11 @@ public class CategoryService implements ICategoryService{
                         .build();
         return Optional.of(categoriesPage);
     }
+
+    @Override
+    public Optional<CategoryDTO> addCategory(CategoryDTO categoryDTO) {
+        Category categorySaved = categoryRepository.save(categoryMapper.fromDTO(categoryDTO));
+
+        return Optional.of(categoryMapper.fromEntity(categorySaved));
+    }
 }

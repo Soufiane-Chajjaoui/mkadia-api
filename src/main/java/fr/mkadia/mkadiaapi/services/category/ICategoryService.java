@@ -9,4 +9,6 @@ public interface ICategoryService {
 
     Optional<CategoryDTO> getCategory(Long id);
     Optional<ElementsOfPageDTO<CategoryDTO>> getCategories(int page , int size , String keyword);
+
+    Optional<CategoryDTO> addCategory(CategoryDTO categoryDTO);
 }
