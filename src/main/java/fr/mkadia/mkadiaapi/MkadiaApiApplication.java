@@ -22,7 +22,7 @@ public class MkadiaApiApplication {
     public CommandLineRunner lineRunner(RoleRepository roleRepository, AuthService authService, RoleService roleService)
     {
         return args -> {
-            roleRepository.save(Role.builder().label("ADMIN").isDefault(false).build());
+            roleRepository.save(Role.builder().label("ADMIN").isDefault(true).build());
             roleRepository.save(Role.builder().label("USER").isDefault(true).build());
             authService.registerUser(
                     UserDTO.builder()

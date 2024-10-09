@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/admin/role")
+@RequestMapping("/api/v1/admin/roles")
 @PreAuthorize("hasRole('ADMIN')")
 @RequiredArgsConstructor
 public class RoleController {
