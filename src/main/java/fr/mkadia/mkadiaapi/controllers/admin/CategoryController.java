@@ -5,9 +5,13 @@ import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.services.category.ICategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/admin/categories")
@@ -28,9 +32,12 @@ public class CategoryController {
         return ResponseEntity.of(categoryService.getCategory(id));
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseOperation<CategoryDTO>> addCategory(@RequestBody CategoryDTO categoryDTO){
-        return ResponseEntity.of(categoryService.addCategory(categoryDTO));
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ResponseOperation<CategoryDTO>> addCategory(
+            @RequestPart(name = "category") CategoryDTO categoryDTO,
+            @RequestPart("file") MultipartFile file) throws IOException {
+
+        return ResponseEntity.of(categoryService.addCategory(categoryDTO , file));
     }
 
     @DeleteMapping("/{id}")

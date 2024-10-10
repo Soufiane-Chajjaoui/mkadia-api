@@ -8,14 +8,17 @@ import fr.mkadia.mkadiaapi.mappers.CategoryMapper;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.CategoryRepository;
+import fr.mkadia.mkadiaapi.services.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,9 +26,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CategoryService implements ICategoryService{
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final FileService fileService;
     @Override
     public Optional<CategoryDTO> getCategory(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(
@@ -53,9 +58,15 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Optional<ResponseOperation<CategoryDTO>> addCategory(CategoryDTO categoryDTO) {
-        Category categorySaved = categoryRepository.save(categoryMapper.fromDTO(categoryDTO));
+    public Optional<ResponseOperation<CategoryDTO>> addCategory(
+            CategoryDTO categoryDTO,
+            MultipartFile file) throws IOException {
 
+        Optional<String> url = fileService.uploadFile(file , categoryDTO.getName());
+        if (url.isPresent()){
+            categoryDTO.setUrl(url.get());
+        }else throw new RuntimeException("File Not Upload");
+        Category categorySaved = categoryRepository.save(categoryMapper.fromDTO(categoryDTO));
         return Optional.of(
                 ResponseOperation.<CategoryDTO>builder()
                         .message("Category Has been Registered")

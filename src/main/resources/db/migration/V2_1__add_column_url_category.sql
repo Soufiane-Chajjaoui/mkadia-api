@@ -1,0 +1,2 @@
+ALTER TABLE categories
+    ADD COLUMN url VARCHAR(100) NOT NULL;
