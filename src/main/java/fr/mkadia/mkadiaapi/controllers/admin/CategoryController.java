@@ -2,6 +2,7 @@ package fr.mkadia.mkadiaapi.controllers.admin;
 
 import fr.mkadia.mkadiaapi.dtos.CategoryDTO;
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
+import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.services.category.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> addCategory(@RequestBody CategoryDTO categoryDTO){
+    public ResponseEntity<ResponseOperation<CategoryDTO>> addCategory(@RequestBody CategoryDTO categoryDTO){
         return ResponseEntity.of(categoryService.addCategory(categoryDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id){
+        return ResponseEntity.of(categoryService.deleteCategory(id));
     }
 }

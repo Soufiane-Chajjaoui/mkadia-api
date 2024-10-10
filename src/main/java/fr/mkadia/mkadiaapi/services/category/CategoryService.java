@@ -5,11 +5,15 @@ import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.entities.Category;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.CategoryMapper;
+import fr.mkadia.mkadiaapi.models.ResponseMessage;
+import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -49,9 +53,30 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Optional<CategoryDTO> addCategory(CategoryDTO categoryDTO) {
+    public Optional<ResponseOperation<CategoryDTO>> addCategory(CategoryDTO categoryDTO) {
         Category categorySaved = categoryRepository.save(categoryMapper.fromDTO(categoryDTO));
 
-        return Optional.of(categoryMapper.fromEntity(categorySaved));
+        return Optional.of(
+                ResponseOperation.<CategoryDTO>builder()
+                        .message("Category Has been Registered")
+                        .object(categoryMapper.fromEntity(categorySaved))
+                        .build()
+        );
     }
+
+    @Override
+    public Optional<ResponseMessage> deleteCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException(STR."Category with id \{id} not found");
+        }
+
+        categoryRepository.deleteById(id);
+        return Optional.of(
+                ResponseMessage.builder()
+                        .message("Has Been Deleted")
+                        .status(HttpStatus.OK.value())
+                        .build()
+        );
+    }
+
 }
