@@ -24,24 +24,30 @@ public class CustomEntryPointHandler implements AuthenticationEntryPoint {
 
         Map<String, Object> responseBody = new HashMap<>();
 
-        log.error(STR."Error :::::\{response.getStatus()}:::\{authException.getMessage()}");
+        log.error("Error ::::: {} ::: {}", response.getStatus(), authException.getMessage());
         responseBody.put("timestamp", System.currentTimeMillis());
         responseBody.put("status", response.getStatus());
         responseBody.put("error", "Unauthorized");
-        if (response.getStatus() == 401) {
-            responseBody.put("message", "Your Session Has Been Expired . Go To Login");
-        } else if (response.getStatus() == 301) {
-            responseBody.put("message", "Provide me refresh token to reconstruct your new access token");
-            responseBody.put("error", "Moved");
-            responseBody.put("redirect", "http://localhost:8888/**/refresh-token");
-        } else if (response.getStatus() == 403) {
-            responseBody.put("message", STR."\{authException.getMessage()} Your token Has Revoked");
-            responseBody.put("error", "unauthorized");
-        } else {
-            responseBody.put("message", authException.getMessage());
+
+        switch (response.getStatus()) {
+            case 401:
+                responseBody.put("message", "Your Session Has Been Expired. Go To Login");
+                break;
+            case 301:
+                responseBody.put("message", "Provide me refresh token to reconstruct your new access token");
+                responseBody.put("error", "Moved");
+                responseBody.put("redirect", "http://localhost:8888/**/refresh-token");
+                break;
+            case 403:
+                responseBody.put("message", STR."\{authException.getMessage()} Your token has been revoked");
+                responseBody.put("error", "Unauthorized");
+                break;
+            default:
+                responseBody.put("message", authException.getMessage());
+                break;
         }
         responseBody.put("path", request.getRequestURI());
-        responseBody.forEach((s, o) -> log.info(STR."\{s}:::::\{o}"));
+        responseBody.forEach((s, o) -> log.info("{} ::::: {}", s, o));
         response.getOutputStream().println(mapper.writeValueAsString(responseBody));
         log.info("Pre-authenticated entry point called. Rejecting access");
     }

@@ -40,6 +40,14 @@ public class GlobalHandler {
         errorDetails.setProperty("message" , "You are Not Authorize for this Resources");
         return errorDetails;
     }
+
+    @ExceptionHandler(UnsupportedException.class)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ProblemDetail FileForbiddenException(UnsupportedException e){
+        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNSUPPORTED_MEDIA_TYPE , e.getMessage());
+        errorDetails.setProperty("message" , e.getMessage());
+        return errorDetails;
+    }
     @ExceptionHandler(EntityExistedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<ResponseError> handlEntityExisted(EntityExistedException e){
