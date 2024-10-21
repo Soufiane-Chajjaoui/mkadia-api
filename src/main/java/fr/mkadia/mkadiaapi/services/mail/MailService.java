@@ -44,7 +44,7 @@ public class MailService {
     public void sendResetPasswordEmail(String to) throws UnknownHostException, MessagingException {
         User user = userService.getUserByEmail(to).orElseThrow(() -> new RuntimeException("User not found"));
         String resetToken = jwtService.generateResetToken(user);
-        tokenService.revokeTokens(user);
+        tokenService.revokeTokens(user , resetToken);
         tokenService.saveUserToken(user , resetToken , TokenType.RESET);
         String content = getContent(resetToken, user);
 

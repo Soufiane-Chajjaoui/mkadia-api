@@ -40,6 +40,14 @@ public class CategoryController {
         return ResponseEntity.of(categoryService.addCategory(categoryDTO , file));
     }
 
+    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ResponseOperation<CategoryDTO>> updateCategory(
+            @RequestPart(name = "category") CategoryDTO categoryDTO,
+            @RequestPart(name = "file" , required = false) MultipartFile file
+    ) throws IOException {
+        return ResponseEntity.of(categoryService.updateCategory(categoryDTO , file));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id){
         return ResponseEntity.of(categoryService.deleteCategory(id));

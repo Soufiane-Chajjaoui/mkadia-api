@@ -131,7 +131,7 @@ public class AuthService implements IAuthService {
                     passwordEncoder.encode(passwordRequest.getNewPassword())
             );
             userRepository.save(user);
-            tokenService.revokeTokens(user);
+            tokenService.revokeTokens(user, null);
         } else throw new PasswordIncorrectException("Password is Not Correct ,Please Provide Correct Password");
     }
 

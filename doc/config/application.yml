@@ -5,6 +5,7 @@ server:
 spring:
   servlet:
     multipart:
+      enabled: true
       max-file-size: 2MB
       max-request-size: 2MB
   datasource:
@@ -66,9 +67,9 @@ twilio:
 # elements of Security
 jwt:
   secret: a7f4e2b1c8d5a3e1b6e8c4a5b6d8a3f5e1c6b4d8f5e1c3a7b1d878h7787e5g7u
-  expiration: 960000 # 16 minutes
+  expiration: 3600000 # 1 hour
   refresh-token:
-    expiration: 600000 # 10 minutes
+    expiration: 28800000 # 8 hours
   reset-token:
     expiration: 1800000
 app:
@@ -78,3 +79,11 @@ app:
         ip: http://localhost:4200
       - name: mobile-client
         ip: http://localhost:5000
+file:
+  upload-dir: D:\\Projets-Prof\\mkadia\\mkadia-app-files
+  allowed:
+    extensions:
+      -jpg
+      -png
+      -svg
+      -jpeg

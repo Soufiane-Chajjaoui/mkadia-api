@@ -28,7 +28,7 @@ public class MkadiaApiApplication {
                     UserDTO.builder()
                             .email("schajjaoui2003@gmail.com")
                             .phone("+212607025329")
-                            .password("Soufianch221")
+                            .password("Soufianch@2211")
                             .lastName("chajjaoui")
                             .firstName("soufiane")
                             .roles(roleService.getDefaultRoles().get()).build()

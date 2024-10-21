@@ -62,7 +62,7 @@ public class CategoryService implements ICategoryService{
             CategoryDTO categoryDTO,
             MultipartFile file) throws IOException {
 
-        Optional<String> url = fileService.uploadFile(file , categoryDTO.getName());
+        Optional<String> url = fileService.saveFile(file);
         if (url.isPresent()){
             categoryDTO.setUrl(url.get());
         }else throw new RuntimeException("File Not Upload");
@@ -89,5 +89,27 @@ public class CategoryService implements ICategoryService{
                         .build()
         );
     }
+    @Override
+    public Optional<ResponseOperation<CategoryDTO>> updateCategory(CategoryDTO category , MultipartFile file) throws IOException {
 
+        Category categoryToUpdate = categoryRepository.findById(category.getId()).orElseThrow(
+                ()-> new EntityNotFoundException("Category Not Found To update it")
+        );
+        if (file != null && !file.isEmpty()) {
+            if (fileService.fileExist(category.getUrl())) {
+                fileService.deleteFile(category.getUrl());
+            }
+
+            String newFileUrl = fileService.saveFile(file).get();
+            category.setUrl(newFileUrl);
+        }
+        categoryToUpdate.setName(category.getName());
+        Category categoryUpdated = categoryRepository.save(categoryToUpdate);
+        return Optional.of(
+                ResponseOperation.<CategoryDTO>builder()
+                        .message("Category Has been Updated")
+                        .object(categoryMapper.fromEntity(categoryUpdated))
+                        .build()
+        );
+    }
 }

@@ -30,8 +30,8 @@ public class TokenService implements ITokenService {
     private final IJwtService jwtService;
 
     @Override
-    public void revokeTokens(User user) {
-        List<Token> tokensValide = tokenRepository.findAllValidTokenByUser(user.getId());
+    public void revokeTokens(User user, String currentRefreshToken) {
+        List<Token> tokensValide = tokenRepository.findAllValidTokenByUser(user.getId() , currentRefreshToken);
         if (tokensValide.isEmpty())
             return;
         tokensValide.forEach(t -> {
@@ -70,16 +70,18 @@ public class TokenService implements ITokenService {
         refreshToken = authHeader.substring(7);
         log.info(refreshToken);
         email = jwtService.extractUsername(refreshToken);
-        var isRefreshTokenValid = tokenRepository.findByToken(refreshToken).map(t -> !t.isRevoked() && !t.isExpired())
-                .orElse(false);
-        if (isRefreshTokenValid) {
-            if (email != null) {
+
+        var isRefreshTokenValid = tokenRepository.findByToken(refreshToken)
+                .filter(t -> !t.isRevoked() && !t.isExpired())
+                .isPresent();
+
+        if (isRefreshTokenValid && email != null) {
                 var user = userRepository.findByEmail(email).orElseThrow(
                         () -> new EntityNotFoundException("User Not Found")
                 );
                 if (jwtService.isTokenValid(refreshToken, user)) {
                     var accessToken = jwtService.generateToken(user);
-                    this.revokeTokens(user);
+                    this.revokeTokens(user , refreshToken);
                     this.saveUserToken(user, accessToken, TokenType.ACCESS);
                     var refreshResponse = ResponseRefreshToken.builder()
                             .refreshToken(refreshToken)
@@ -87,7 +89,6 @@ public class TokenService implements ITokenService {
                             .build();
                     return Optional.of(refreshResponse);
                 }
-            }
         }
         return Optional.ofNullable(new HashMap<>().put("message" , "Your Session Expired :("));
     }

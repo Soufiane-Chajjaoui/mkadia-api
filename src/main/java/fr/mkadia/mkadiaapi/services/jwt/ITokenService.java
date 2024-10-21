@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ITokenService {
 
-    void revokeTokens(User appUser);
+    void revokeTokens(User user, String currentRefreshToken);
     void saveUserToken(User appUser, String token, TokenType tokentype);
 
     Optional<?> refreshToken(
