@@ -32,7 +32,7 @@ public class CategoryService implements ICategoryService{
     private final CategoryMapper categoryMapper;
     private final FileService fileService;
     @Override
-    public Optional<CategoryDTO> getCategory(Long id) {
+    public Optional<CategoryDTO> getCategory(Integer id) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException(STR."Category \{id} Not Found")
         );
@@ -76,7 +76,7 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Optional<ResponseMessage> deleteCategory(Long id) {
+    public Optional<ResponseMessage> deleteCategory(Integer id) {
         if (!categoryRepository.existsById(id)) {
             throw new EntityNotFoundException(STR."Category with id \{id} not found");
         }

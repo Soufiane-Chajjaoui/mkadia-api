@@ -19,7 +19,7 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     private String label;
     @Column(name = "is_default")
     private Boolean isDefault = Boolean.FALSE;

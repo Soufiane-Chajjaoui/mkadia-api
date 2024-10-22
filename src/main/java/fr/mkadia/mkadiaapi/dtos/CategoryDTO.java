@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CategoryDTO {
 
-    private Long id;
+    private Integer id;
     private String name;
     private String url;
     private LocalDateTime createdAt;

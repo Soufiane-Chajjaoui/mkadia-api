@@ -49,6 +49,7 @@ spring:
         debug: true
 logging:
   level:
+    web: DEBUG
     org:
       springframework:
         security: DEBUG # or trace

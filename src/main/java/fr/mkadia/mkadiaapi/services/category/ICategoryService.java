@@ -12,12 +12,12 @@ import java.util.Optional;
 
 public interface ICategoryService {
 
-    Optional<CategoryDTO> getCategory(Long id);
+    Optional<CategoryDTO> getCategory(Integer id);
     Optional<ElementsOfPageDTO<CategoryDTO>> getCategories(int page , int size , String keyword);
 
     Optional<ResponseOperation<CategoryDTO>> addCategory(CategoryDTO categoryDTO, MultipartFile file) throws IOException;
 
-    Optional<ResponseMessage> deleteCategory(Long id);
+    Optional<ResponseMessage> deleteCategory(Integer id);
 
     Optional<ResponseOperation<CategoryDTO>> updateCategory(CategoryDTO category, MultipartFile file) throws IOException;
 
