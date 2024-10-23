@@ -4,7 +4,6 @@ CREATE TABLE products (
     description TEXT NOT NULL,
     price NUMERIC(10 , 2) NOT NULL,
     stock INT NOT NULL,
-    image_url TEXT[],
     category_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

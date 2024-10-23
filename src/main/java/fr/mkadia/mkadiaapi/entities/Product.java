@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -32,6 +34,12 @@ public class Product {
             , referencedColumnName = "category_id"
             , foreignKey = @ForeignKey(name = "fk_product_category"))
     private Category category;
+
+    @OneToMany(mappedBy = "products"
+            , fetch = FetchType.LAZY
+            , orphanRemoval = true
+            , cascade = CascadeType.ALL)
+    private List<Media> urls = new ArrayList<>();
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
