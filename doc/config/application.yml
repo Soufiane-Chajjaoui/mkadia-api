@@ -82,9 +82,8 @@ app:
         ip: http://localhost:5000
 file:
   upload-dir: D:\\Projets-Prof\\mkadia\\mkadia-app-files
-  allowed:
-    extensions:
-      -jpg
-      -png
-      -svg
-      -jpeg
+  allowed-extensions:
+    - "image/jpeg"
+    - "image/jpg"
+    - "image/png"
+    - "video/mp4"

@@ -1,7 +1,9 @@
-package fr.mkadia.mkadiaapi.services;
+package fr.mkadia.mkadiaapi.services.file;
 
+import fr.mkadia.mkadiaapi.config.FileConfig;
 import fr.mkadia.mkadiaapi.exceptions.UnsupportedException;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,26 +12,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class FileService {
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+    private final FileConfig fileConfig;
 
-    public Optional<String> saveFile(MultipartFile file) throws IOException {
+    public Optional<String> saveFile(MultipartFile file) {
 
         String contentType = file.getContentType();
-        if (!contentType.equals("image/jpeg") && !contentType.equals("image/png")) {
-            throw new UnsupportedException("Only JPEG or PNG images are allowed");
+        log.info(contentType);
+        if (!fileConfig.getAllowedExtensions().contains(contentType)) {
+            throw new UnsupportedException(STR."Only allowed file types are accepted: \{this.fileConfig.getAllowedExtensions().stream().map(s -> s.split("/")[1]).toList()}");
         }
-        Path pathDir = Paths.get(this.uploadDir);
+        Path pathDir = Paths.get(this.fileConfig.getUploadDir());
 
         if (!Files.exists(pathDir)) {
-            Files.createDirectories(pathDir);
+            try {
+                Files.createDirectories(pathDir);
+            } catch (IOException e) {
+                throw new UnsupportedException(e);
+            }
         }
 
         String extension = contentType.split("/")[1];
@@ -37,7 +44,11 @@ public class FileService {
         String fileName = STR."\{new Date().getTime()}.\{extension}";
         Path filePath = pathDir.resolve(fileName);
 
-        Files.copy(file.getInputStream(), filePath , StandardCopyOption.REPLACE_EXISTING);
+        try {
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new UnsupportedException(e);
+        }
         return Optional.of(filePath.toUri().toString());
     }
 

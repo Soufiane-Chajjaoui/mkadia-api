@@ -6,7 +6,6 @@ import fr.mkadia.mkadiaapi.services.authentication.LogoutService;
 import fr.mkadia.mkadiaapi.services.filters.AuthFilterService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
