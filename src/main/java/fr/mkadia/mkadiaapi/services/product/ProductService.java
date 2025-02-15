@@ -10,6 +10,7 @@ import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.ProductRepository;
 import fr.mkadia.mkadiaapi.services.file.FileService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService implements IProductService{
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
@@ -30,9 +32,10 @@ public class ProductService implements IProductService{
     @Override
     public Optional<ResponseOperation<ProductDTO>> saveProduct(ProductDTO productDTO, List<MultipartFile> files) {
         Product product = productMapper.fromDTO(productDTO);
-//        if (!files.isEmpty()){
-//            List<Optional<String>> urls = files.stream().map(fileService::saveFile).toList();
-//        }
+        if (!files.isEmpty()){
+            List<Optional<String>> urls = files.stream().map(fileService::saveFile).toList();
+            urls.forEach(System.out::println);
+        }
         return Optional.of(
                 ResponseOperation
                         .<ProductDTO>builder()
