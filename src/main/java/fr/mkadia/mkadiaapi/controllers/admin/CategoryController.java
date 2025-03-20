@@ -4,6 +4,7 @@ import fr.mkadia.mkadiaapi.dtos.CategoryDTO;
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.services.category.ICategoryService;
+import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/api/v1/admin/categories")
@@ -35,16 +38,16 @@ public class CategoryController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseOperation<CategoryDTO>> addCategory(
             @RequestPart(name = "category") CategoryDTO categoryDTO,
-            @RequestPart("file") MultipartFile file) throws IOException {
+            @RequestPart("file") MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
 
         return ResponseEntity.of(categoryService.addCategory(categoryDTO , file));
     }
 
-    @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseOperation<CategoryDTO>> updateCategory(
             @RequestPart(name = "category") CategoryDTO categoryDTO,
-            @RequestPart(name = "file" , required = false) MultipartFile file
-    ) throws IOException {
+            @RequestPart(name = "file", required = false) MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+
         return ResponseEntity.of(categoryService.updateCategory(categoryDTO , file));
     }
 

@@ -9,6 +9,8 @@ import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.CategoryRepository;
 import fr.mkadia.mkadiaapi.services.file.FileService;
+import fr.mkadia.mkadiaapi.services.file.MinioStorageService;
+import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +35,7 @@ import java.util.stream.Collectors;
 public class CategoryService implements ICategoryService{
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final MinioStorageService minioStorageService;
     private final FileService fileService;
     @Override
     public Optional<CategoryDTO> getCategory(Integer id) {
@@ -60,51 +66,83 @@ public class CategoryService implements ICategoryService{
     @Override
     public Optional<ResponseOperation<CategoryDTO>> addCategory(
             CategoryDTO categoryDTO,
-            MultipartFile file) throws IOException {
+            MultipartFile file){
+        try {
+            Optional<String> url = minioStorageService.uploadObject(file);
+            if (url.isPresent()){
+                categoryDTO.setUrl(url.get());
+            }else throw new RuntimeException("File Not Upload");
+            Category categorySaved = categoryRepository.save(categoryMapper.fromDTO(categoryDTO));
+            return Optional.of(
+                    ResponseOperation.<CategoryDTO>builder()
+                            .message("Category Has been Registered")
+                            .object(categoryMapper.fromEntity(categorySaved))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        Optional<String> url = fileService.saveFile(file);
-        if (url.isPresent()){
-            categoryDTO.setUrl(url.get());
-        }else throw new RuntimeException("File Not Upload");
-        Category categorySaved = categoryRepository.save(categoryMapper.fromDTO(categoryDTO));
-        return Optional.of(
-                ResponseOperation.<CategoryDTO>builder()
-                        .message("Category Has been Registered")
-                        .object(categoryMapper.fromEntity(categorySaved))
-                        .build()
-        );
     }
 
     @Override
     public Optional<ResponseMessage> deleteCategory(Integer id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new EntityNotFoundException(STR."Category with id \{id} not found");
-        }
+
+        Category category = categoryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(STR."Category with id \{id} not found")
+        );
 
         categoryRepository.deleteById(id);
-        return Optional.of(
-                ResponseMessage.builder()
-                        .message("Has Been Deleted")
-                        .status(HttpStatus.OK.value())
-                        .build()
+        Optional<Boolean> deletedCategoryObject = minioStorageService.deleteObject(category.getUrl());
+        deletedCategoryObject.orElseThrow(
+                () -> new EntityNotFoundException(STR."Category with id \{id} not found")
         );
+            return Optional.of(
+                    ResponseMessage.builder()
+                            .message("Has Been Deleted")
+                            .status(HttpStatus.OK.value())
+                            .build()
+            );
     }
     @Override
-    public Optional<ResponseOperation<CategoryDTO>> updateCategory(CategoryDTO category , MultipartFile file) throws IOException {
+    public Optional<ResponseOperation<CategoryDTO>> updateCategory(CategoryDTO category, MultipartFile file)
+            throws IOException, ServerException, InsufficientDataException, ErrorResponseException,
+            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
+            XmlParserException, InternalException {
 
-        Category categoryToUpdate = categoryRepository.findById(category.getId()).orElseThrow(
-                ()-> new EntityNotFoundException("Category Not Found To update it")
-        );
+        Category categoryToUpdate = categoryRepository.findById(category.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Found To update it"));
+
         if (file != null && !file.isEmpty()) {
-            if (fileService.fileExist(category.getUrl())) {
-                fileService.deleteFile(category.getUrl());
-            }
+            String oldUrl = categoryToUpdate.getUrl();
 
-            String newFileUrl = fileService.saveFile(file).get();
-            category.setUrl(newFileUrl);
+            if (oldUrl != null && !oldUrl.isEmpty()) {
+                String oldObjectName = minioStorageService.extractObjectName(oldUrl);
+
+                // Vérifier d'abord si le fichier a le même nom
+                if (!oldObjectName.equals(file.getOriginalFilename())) {
+                    // Vérifier si le fichier est réellement différent (taille ou contenu)
+                    if (!minioStorageService.isSameObject(oldObjectName, file)) {
+                        minioStorageService.deleteObject(oldObjectName);
+
+                        Optional<String> newFileUrl = minioStorageService.uploadObject(file);
+                        categoryToUpdate.setUrl(newFileUrl.orElseThrow(() ->
+                                new IOException("File Upload Failed")));
+                    }
+                }
+            } else {
+                // Aucun fichier précédent, on upload directement
+                Optional<String> newFileUrl = minioStorageService.uploadObject(file);
+                categoryToUpdate.setUrl(newFileUrl.orElseThrow(() ->
+                        new IOException("File Upload Failed")));
+            }
         }
+
+        // Mise à jour des autres champs
         categoryToUpdate.setName(category.getName());
+
         Category categoryUpdated = categoryRepository.save(categoryToUpdate);
+
         return Optional.of(
                 ResponseOperation.<CategoryDTO>builder()
                         .message("Category Has been Updated")
@@ -112,4 +150,5 @@ public class CategoryService implements ICategoryService{
                         .build()
         );
     }
+
 }

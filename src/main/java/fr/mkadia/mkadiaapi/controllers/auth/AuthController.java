@@ -53,7 +53,7 @@ public class AuthController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PatchMapping("/change-password")
+    @PatchMapping("/change-secretKey")
     public ResponseEntity<?> changePassword(@RequestBody PasswordRequest passwordRequest) {
 
         return ResponseEntity.of(authService.changePassword(passwordRequest.getEmail(), passwordRequest));
@@ -64,7 +64,7 @@ public class AuthController {
         return ResponseEntity.of(tokenService.refreshToken(request, response));
     }
 
-    @PostMapping(value = "/forget-password",
+    @PostMapping(value = "/forget-secretKey",
     consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseOperation<String>> processForgetPassword(@ModelAttribute PasswordRequest passwordRequest) throws UnknownHostException, MessagingException {
@@ -75,7 +75,7 @@ public class AuthController {
         );
     }
 
-    @GetMapping("/reset-password")
+    @GetMapping("/reset-secretKey")
     public ResponseEntity<ResponseOperation<UserDTO>> resetPassword(@RequestParam(name = "reset-token") String token){
 
         UserDTO user = tokenService.tokenVerify(token);
@@ -87,7 +87,7 @@ public class AuthController {
                         .build()
         );
     }
-    @PatchMapping(value = "/change-reset-password",
+    @PatchMapping(value = "/change-reset-secretKey",
     consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE ,
     produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER')")

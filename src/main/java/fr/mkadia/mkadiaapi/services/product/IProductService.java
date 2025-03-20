@@ -4,7 +4,6 @@ import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
-import org.springframework.http.ProblemDetail;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

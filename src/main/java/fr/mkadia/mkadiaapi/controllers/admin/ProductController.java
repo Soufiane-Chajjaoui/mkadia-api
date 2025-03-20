@@ -34,7 +34,7 @@ public class ProductController {
         return ResponseEntity.of(productService.saveProduct(productDTO , files));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getCategory(@PathVariable Integer id){
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Integer id){
         return ResponseEntity.of(productService.getProduct(id));
     }
     @PatchMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})

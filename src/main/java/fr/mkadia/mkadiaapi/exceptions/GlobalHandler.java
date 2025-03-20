@@ -27,7 +27,7 @@ public class GlobalHandler {
     public ProblemDetail handleAuthenticationException(AuthenticationException e){
         if (e instanceof BadCredentialsException){
             ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED , e.getMessage());
-            errorDetails.setProperty("message" , "Your email or password incorrect. Please ");
+            errorDetails.setProperty("message" , "Your email or secretKey incorrect. Please ");
             return errorDetails;
         }
         return null;
@@ -92,7 +92,7 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public  ProblemDetail handlePasswordIncorrectException(PasswordIncorrectException e){
         ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND , e.getMessage());
-        errorDetails.setProperty("message" , "Password is Not match previous password");
+        errorDetails.setProperty("message" , "Password is Not match previous secretKey");
         return errorDetails;
     }
 

@@ -3,13 +3,16 @@ server:
   servlet:
     context-path: /mkadia-api
 spring:
+  docker:
+    compose:
+      lifecycle-management: start_and_stop
   servlet:
     multipart:
       enabled: true
-      max-file-size: 2MB
-      max-request-size: 2MB
+      max-file-size: 5MB
+      max-request-size: 5MB
   datasource:
-    url: jdbc:postgresql://localhost:5432/mkadia-db
+    url: jdbc:postgresql://localhost:5432/mkadia-db?createDatabaseIfNotExist=true
     username: postgres
     password: soufianch
   jpa:
@@ -80,10 +83,11 @@ app:
         ip: http://localhost:4200
       - name: mobile-client
         ip: http://localhost:5000
-file:
-  upload-dir: D:\\Projets-Prof\\mkadia\\mkadia-app-files
-  allowed-extensions:
-    - "image/jpeg"
-    - "image/jpg"
-    - "image/png"
-    - "video/mp4"
+minio:
+    allowed-extensions: [jpg, png, pdf, txt]
+    access-key: minioadmin
+    secret-key: minioadmin
+    url: http://localhost:9000
+    bucket:
+      name: mkadia-objects
+    put-object-part-size: 5242880 #value in bytes (minimum is 5 MB equivalent)

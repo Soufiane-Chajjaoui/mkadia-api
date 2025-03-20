@@ -1,7 +1,7 @@
 CREATE TABLE media (
     media_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     media_type type_of_media,
-    url VARCHAR(255) NOT NULL
+    url TEXT NOT NULL
 );
 
 ALTER TABLE media

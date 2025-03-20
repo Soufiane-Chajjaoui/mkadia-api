@@ -3,6 +3,9 @@ package fr.mkadia.mkadiaapi.entities;
 import fr.mkadia.mkadiaapi.enums.MediaType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.Type;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Table(name = "media")
@@ -17,7 +20,8 @@ public class Media {
     private String url;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "media_type")
+    @Column(name = "media_type", columnDefinition = "type_of_media" , nullable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class) // to fix cast expression varying compatible with PostgreSQL
     private MediaType type;
 
     @ManyToOne(fetch = FetchType.LAZY , cascade =  CascadeType.ALL)
