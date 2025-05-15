@@ -87,7 +87,7 @@ minio:
     allowed-extensions: [jpg, png, pdf, txt]
     access-key: minioadmin
     secret-key: minioadmin
-    url: http://localhost:9000
+    url: http://localhost:9200
     bucket:
       name: mkadia-objects
     put-object-part-size: 5242880 #value in bytes (minimum is 5 MB equivalent)

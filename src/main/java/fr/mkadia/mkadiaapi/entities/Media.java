@@ -30,5 +30,5 @@ public class Media {
             , columnDefinition = "INT"
             , referencedColumnName = "product_id"
             , foreignKey = @ForeignKey(name = "fk_media_product"))
-    private Product products;
+    private Product product;
 }

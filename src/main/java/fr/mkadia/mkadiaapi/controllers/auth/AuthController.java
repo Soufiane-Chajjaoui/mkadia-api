@@ -1,8 +1,6 @@
 package fr.mkadia.mkadiaapi.controllers.auth;
 
-import fr.mkadia.mkadiaapi.config.ClientProperties;
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
-import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.mappers.UserMapper;
 import fr.mkadia.mkadiaapi.models.*;
 import fr.mkadia.mkadiaapi.services.authentication.IAuthService;
@@ -16,16 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -53,7 +45,7 @@ public class AuthController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PatchMapping("/change-secretKey")
+    @PatchMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody PasswordRequest passwordRequest) {
 
         return ResponseEntity.of(authService.changePassword(passwordRequest.getEmail(), passwordRequest));
@@ -64,7 +56,7 @@ public class AuthController {
         return ResponseEntity.of(tokenService.refreshToken(request, response));
     }
 
-    @PostMapping(value = "/forget-secretKey",
+    @PostMapping(value = "/forget-password",
     consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseOperation<String>> processForgetPassword(@ModelAttribute PasswordRequest passwordRequest) throws UnknownHostException, MessagingException {
@@ -75,7 +67,7 @@ public class AuthController {
         );
     }
 
-    @GetMapping("/reset-secretKey")
+    @GetMapping("/reset-password")
     public ResponseEntity<ResponseOperation<UserDTO>> resetPassword(@RequestParam(name = "reset-token") String token){
 
         UserDTO user = tokenService.tokenVerify(token);
@@ -87,7 +79,7 @@ public class AuthController {
                         .build()
         );
     }
-    @PatchMapping(value = "/change-reset-secretKey",
+    @PatchMapping(value = "/change-reset-password",
     consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE ,
     produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER')")

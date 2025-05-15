@@ -35,7 +35,7 @@ public class Product {
             , foreignKey = @ForeignKey(name = "fk_product_category"))
     private Category category;
 
-    @OneToMany(mappedBy = "products"
+    @OneToMany(mappedBy = "product"
             , fetch = FetchType.LAZY
             , orphanRemoval = true
             , cascade = CascadeType.ALL)

@@ -106,9 +106,7 @@ public class CategoryService implements ICategoryService{
     }
     @Override
     public Optional<ResponseOperation<CategoryDTO>> updateCategory(CategoryDTO category, MultipartFile file)
-            throws IOException, ServerException, InsufficientDataException, ErrorResponseException,
-            NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException,
-            XmlParserException, InternalException {
+            throws IOException {
 
         Category categoryToUpdate = categoryRepository.findById(category.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Category Not Found To update it"));
@@ -119,10 +117,9 @@ public class CategoryService implements ICategoryService{
             if (oldUrl != null && !oldUrl.isEmpty()) {
                 String oldObjectName = minioStorageService.extractObjectName(oldUrl);
 
-                // Vérifier d'abord si le fichier a le même nom
                 if (!oldObjectName.equals(file.getOriginalFilename())) {
-                    // Vérifier si le fichier est réellement différent (taille ou contenu)
                     if (!minioStorageService.isSameObject(oldObjectName, file)) {
+
                         minioStorageService.deleteObject(oldObjectName);
 
                         Optional<String> newFileUrl = minioStorageService.uploadObject(file);

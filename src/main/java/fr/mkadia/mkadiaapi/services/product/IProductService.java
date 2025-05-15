@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IProductService {
-    Optional<ElementsOfPageDTO<ProductDTO>> getProducts(int page, int size);
+
+    Optional<ElementsOfPageDTO<ProductDTO>> getProducts(int page, int size, String keyword);
 
     Optional<ResponseOperation<ProductDTO>> saveProduct(ProductDTO productDTO, List<MultipartFile> files);
 
@@ -18,5 +19,5 @@ public interface IProductService {
 
     Optional<ResponseMessage> deleteProduct(Integer id);
 
-    Optional<ResponseMessage> updateProduct(ProductDTO productDTO, List<MultipartFile> files);
+    Optional<ResponseOperation<ProductDTO>> updateProduct(ProductDTO productDTO, List<MultipartFile> files);
 }

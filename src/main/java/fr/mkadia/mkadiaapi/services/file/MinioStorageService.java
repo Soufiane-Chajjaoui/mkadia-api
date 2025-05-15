@@ -27,6 +27,9 @@ public class MinioStorageService {
     @Value("${minio.bucket.name}")
     private String COMMON_BUCKET_NAME;
 
+    @Value("${minio.url}")
+    private String url;
+
     @Value("${minio.put-object-part-size}")
     private Long putObjectPartSize;
 
@@ -34,8 +37,9 @@ public class MinioStorageService {
         this.minioClient = minioClient;
     }
 
-    public Optional<String> uploadObject(MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        String fileName = STR."\{UUID.randomUUID()}_\{file.getOriginalFilename()}";
+    public Optional<String> uploadObject(MultipartFile file) throws IOException   {
+
+        String fileName = STR."\{UUID.randomUUID()}.\{this.extractExtension(file.getOriginalFilename())}";
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -71,8 +75,9 @@ public class MinioStorageService {
         });
     }
 
-    public List<String> uploadMultipleFiles(List<FileUploadRequest> files){
-        List<CompletableFuture<String>> futures = files
+    public List<String> uploadMultipleFiles(List<MultipartFile> files){
+
+        List<CompletableFuture<String>> futures = this.fileUploadRequests(files)
                 .stream()
                 .map(file-> uploadFileSync(file.getFileName(), file.getInputStream(), file.getContentType()))
                 .toList();
@@ -83,23 +88,23 @@ public class MinioStorageService {
     }
 
     private String getFileUrl(String fileName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        return minioClient.getPresignedObjectUrl(
+        return extractPublicFileUrl(minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs
                         .builder()
                         .bucket(this.COMMON_BUCKET_NAME)
                         .object(fileName)
                         .method(Method.GET)
                         .build()
-        );
+        ));
     }
 
-    public Optional<Boolean> deleteObject(String objectsName){
+    public Optional<Boolean> deleteObject(String urlObject){
         try {
-
+            String objectName = extractObjectName(urlObject);
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(this.COMMON_BUCKET_NAME)
-                            .object(objectsName)
+                            .object(objectName)
                             .build()
             );
             return Optional.of(true);
@@ -156,6 +161,31 @@ public class MinioStorageService {
             return false;
         }
     }
+
+    public String extractPublicFileUrl(String objectName){
+        return objectName.split("\\?")[0];
+    }
+
+    private String extractExtension(String fileName) {
+        if (fileName == null || !fileName.contains(".")) {
+            return ""; // Retourne une chaîne vide si l'extension n'existe pas
+        }
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    private List<FileUploadRequest> fileUploadRequests(List<MultipartFile> files){
+
+        return files
+                .stream()
+                .map(file -> {
+                    try {
+                        return new MinioStorageService.FileUploadRequest(file.getOriginalFilename(), file.getContentType(), file.getInputStream());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).toList();
+    }
+
 
     @Data
     @AllArgsConstructor @NoArgsConstructor
