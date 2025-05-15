@@ -1,4 +1,23 @@
 services:
+  mkadia-api:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./doc/config:/config
+    environment:
+      - SPRING_CONFIG_LOCATION=file:/config/application.yml
+    depends_on:
+      - postgres
+      - minio
+  mkadia-web-client:
+    image: mkadia-web-client:latest
+    build:
+      context: ../mkadia-web-client
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    restart: always
   postgres:
     image: 'postgres:latest'
     environment:
@@ -9,6 +28,11 @@ services:
       - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: 'dpage/pgadmin4:latest'

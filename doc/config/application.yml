@@ -12,7 +12,7 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
   datasource:
-    url: jdbc:postgresql://localhost:5432/mkadia-db?createDatabaseIfNotExist=true
+    url: jdbc:postgresql://postgres:5432/mkadia-db?createDatabaseIfNotExist=true
     username: postgres
     password: soufianch
   jpa:
@@ -80,14 +80,14 @@ app:
   clients:
     ips:
       - name: web-client
-        ip: http://localhost:4200
-      - name: mobile-client
-        ip: http://localhost:5000
+        ip: http://mkadia-web-client:80
+#      - name: mobile-client
+#        ip: http://localhost:5000
 minio:
     allowed-extensions: [jpg, png, pdf, txt]
     access-key: minioadmin
     secret-key: minioadmin
-    url: http://localhost:9200
+    url: http://minio:9000
     bucket:
       name: mkadia-objects
     put-object-part-size: 5242880 #value in bytes (minimum is 5 MB equivalent)
