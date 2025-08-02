@@ -1,23 +1,23 @@
 services:
-  mkadia-api:
-    build: .
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./doc/config:/config
-    environment:
-      - SPRING_CONFIG_LOCATION=file:/config/application.yml
-    depends_on:
-      - postgres
-      - minio
-  mkadia-web-client:
-    image: mkadia-web-client:latest
-    build:
-      context: ../mkadia-web-client
-      dockerfile: Dockerfile
-    ports:
-      - "4000:4000"
-    restart: always
+#  mkadia-api:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - ./doc/config:/config
+#    environment:
+#      - SPRING_CONFIG_LOCATION=file:/config/application.yml
+#    depends_on:
+#      - postgres
+#      - minio
+#  mkadia-web-client:
+#    image: mkadia-web-client:latest
+#    build:
+#      context: ../mkadia-web-client
+#      dockerfile: Dockerfile
+#    ports:
+#      - "4000:4000"
+#    restart: always
   postgres:
     image: 'postgres:latest'
     environment:
@@ -49,8 +49,8 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
       MINIO_DEFAULT_BUCKETS: mkadia-objects
     ports:
-      - '9200:9000'  # Port de l'interface web MinIO
-      - '9001:9001'  # Port d'API (facultatif, utilisé pour l'outil mc de MinIO)
+      - '9000:9000'  # API port
+      - '9001:9001'  # Console port
     volumes:
       - minio-data:/data  # Volume pour persister les données
     command: server /data --console-address ":9001" # Commande pour démarrer le serveur MinIO

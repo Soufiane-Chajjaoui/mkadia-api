@@ -31,7 +31,7 @@ public class ProductController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseOperation<ProductDTO>> saveProduct(
             @RequestPart(name = "product") ProductDTO productDTO
-            ,@RequestPart(name = "files" , required = false) List<MultipartFile> files){
+            ,@RequestPart(name = "files") List<MultipartFile> files){
         return ResponseEntity.of(productService.saveProduct(productDTO , files));
     }
     @GetMapping("/{id}")
