@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/categories")
@@ -23,11 +24,16 @@ import java.security.NoSuchAlgorithmException;
 public class CategoryController {
     private final ICategoryService categoryService;
 
-    @GetMapping
+    @GetMapping(params = {"page", "size"})
     public ResponseEntity<ElementsOfPageDTO<CategoryDTO>> getCategories(@RequestParam(name = "page" , defaultValue = "0") int page,
                                                            @RequestParam(name = "keyword" ,required = false) String keyword,
                                                            @RequestParam(name = "size" , defaultValue = "5")int size){
         return ResponseEntity.of(categoryService.getCategories(page , size , keyword));
+    }
+
+    @GetMapping(params = {"keyword", "!page", "!size"})
+    public ResponseEntity<List<CategoryDTO>> getCategoriesByKeyword(@RequestParam(name = "keyword" , required = false) String keyword){
+        return ResponseEntity.of(categoryService.getCategoriesByKeyword(keyword));
     }
 
     @GetMapping("/{id}")

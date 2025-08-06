@@ -20,8 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +53,7 @@ public class ProductService implements IProductService{
     public Optional<ResponseOperation<ProductDTO>> saveProduct(ProductDTO productDTO, List<MultipartFile> files) {
         Product product = productMapper.fromDTO(productDTO);
         Product productSaved = productRepository.save(product);
+        AtomicInteger positionFile = new AtomicInteger(1);
         minioStorageService.uploadMultipleFiles(files)
                 .forEach(mediaUrl -> {
                             String contentType = files.stream()
@@ -65,6 +66,7 @@ public class ProductService implements IProductService{
                                     Media.builder()
                                             .product(productSaved)
                                             .url(mediaUrl)
+                                            .position(positionFile.getAndIncrement())
                                             .type(mediaType)
                                             .build()
                             );

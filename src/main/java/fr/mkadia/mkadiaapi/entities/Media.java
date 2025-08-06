@@ -31,4 +31,5 @@ public class Media {
             , referencedColumnName = "product_id"
             , foreignKey = @ForeignKey(name = "fk_media_product"))
     private Product product;
+    private Integer position;
 }

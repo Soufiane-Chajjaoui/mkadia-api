@@ -15,4 +15,5 @@ public class MediaDTO {
     private String url;
     private MediaType type;
     private Product products;
+    private Integer position;
 }

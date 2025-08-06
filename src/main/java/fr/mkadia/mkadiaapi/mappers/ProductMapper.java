@@ -3,6 +3,7 @@ package fr.mkadia.mkadiaapi.mappers;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
 import fr.mkadia.mkadiaapi.entities.Product;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Set;

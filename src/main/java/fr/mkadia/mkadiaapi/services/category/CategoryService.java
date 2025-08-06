@@ -148,4 +148,11 @@ public class CategoryService implements ICategoryService{
         );
     }
 
+    @Override
+    public Optional<List<CategoryDTO>> getCategoriesByKeyword(String keyword) {
+        List<Category> categories = categoryRepository.findByNameContainingIgnoreCase(keyword);
+        List<CategoryDTO> categoriesDTO = categories.stream().map(categoryMapper::fromEntity).toList();
+        return Optional.of(categoriesDTO);
+    }
+
 }
