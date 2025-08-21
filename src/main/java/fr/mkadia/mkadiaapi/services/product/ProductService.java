@@ -2,13 +2,16 @@ package fr.mkadia.mkadiaapi.services.product;
 
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
+import fr.mkadia.mkadiaapi.entities.Category;
 import fr.mkadia.mkadiaapi.entities.Media;
 import fr.mkadia.mkadiaapi.entities.Product;
 import fr.mkadia.mkadiaapi.enums.MediaType;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
+import fr.mkadia.mkadiaapi.mappers.CategoryMapper;
 import fr.mkadia.mkadiaapi.mappers.ProductMapper;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
+import fr.mkadia.mkadiaapi.repositories.CategoryRepository;
 import fr.mkadia.mkadiaapi.repositories.MediaRepository;
 import fr.mkadia.mkadiaapi.repositories.ProductRepository;
 import fr.mkadia.mkadiaapi.services.file.MinioStorageService;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -31,7 +35,9 @@ public class ProductService implements IProductService{
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
     private final MediaRepository mediaRepository;
+    private final CategoryRepository categoryRepository;
     private final MinioStorageService minioStorageService;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public Optional<ElementsOfPageDTO<ProductDTO>> getProducts(int page, int size, String keyword) {
@@ -82,12 +88,12 @@ public class ProductService implements IProductService{
 
     @Override
     public Optional<ProductDTO> getProduct(Integer id) {
+
+        Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
+
+        product.setUrls(mediaRepository.findAllByProduct(product));
         return Optional.of(
-                productMapper.fromEntity(productRepository.findById(id)
-                        .orElseThrow(
-                                ()-> new EntityNotFoundException("Product Not Found")
-                        )
-                )
+                productMapper.fromEntity(product)
         );
     }
 
@@ -109,63 +115,89 @@ public class ProductService implements IProductService{
                         .build()
         );
     }
-
+    @Transactional
     @Override
-    public Optional<ResponseOperation<ProductDTO>> updateProduct(ProductDTO productDTO, List<MultipartFile> files) {
+    public Optional<ResponseOperation<ProductDTO>> updateProduct(ProductDTO productDTO,
+                                                                 List<MultipartFile> files,
+                                                                 List<String> existingUrls) {
 
-        log.info(productDTO.getName());
-        log.info(String.valueOf(files.size()));
-        // Vérifier si le produit existe
+        log.info("Updating product: {}", productDTO.getName());
+
+        // 🔹 Charger le produit
         Product productToUpdate = productRepository.findById(productDTO.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
 
-        // Mise à jour des autres champs du produit
+        // 🔹 Mise à jour des champs de base
         productToUpdate.setName(productDTO.getName());
         productToUpdate.setDescription(productDTO.getDescription());
         productToUpdate.setPrice(productDTO.getPrice());
 
-        // Gérer les médias (images)
-        if (files != null && !files.isEmpty()) {
-            // Récupérer les anciens médias
-            List<Media> oldMediaList = mediaRepository.findAllByProduct(productToUpdate);
-            Set<String> oldMediaUrls = oldMediaList.stream()
-                    .map(Media::getUrl)
-                    .collect(Collectors.toSet());
+        Category newCategory = categoryRepository.findById(productDTO.getCategory().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Category Not Found"));
+        productToUpdate.setCategory(newCategory);
 
-            Set<String> newFilesName = files.stream()
-                    .map(MultipartFile::getOriginalFilename)
-                    .collect(Collectors.toSet());
+        log.info("Before update: {}", productToUpdate);
 
-            oldMediaList.forEach((media) -> {
-                String fileName = minioStorageService.extractObjectName(media.getUrl());
-                if (!newFilesName.contains(fileName)) {
+        // 🔹 Récupérer tous les anciens médias
+        List<Media> oldMediaList = mediaRepository.findAllByProduct(productToUpdate);
+
+        // ------------------------------------------------------------
+        // 1️⃣ SUPPRIMER LES MÉDIAS QUI NE SONT PAS DANS existingUrls
+        // ------------------------------------------------------------
+        if (existingUrls != null && !existingUrls.isEmpty()) {
+            List<Media> toDelete = oldMediaList.stream()
+                    .filter(media -> !existingUrls.contains(media.getUrl()))
+                    .toList();
+
+            if (!toDelete.isEmpty()) {
+                toDelete.forEach(media -> {
+                    String fileName = minioStorageService.extractObjectName(media.getUrl());
+                    log.info("Deleting old media not present in request: {}", fileName);
                     minioStorageService.deleteObject(fileName);
-                    mediaRepository.delete(media);
-                }
+                });
+                mediaRepository.deleteAllInBatch(toDelete);
+            }
+        } else {
+            // si aucune url envoyée → supprimer tous les anciens
+            log.info("No existingUrls sent → deleting all old medias");
+            oldMediaList.forEach(media -> {
+                minioStorageService.deleteObject(minioStorageService.extractObjectName(media.getUrl()));
             });
-
-            List<Media> mediaList =
-            minioStorageService.uploadMultipleFiles(files)
-                    .stream()
-                    .map(mediaUrl -> {
-                        String contentType = files.stream()
-                                .filter(file -> mediaUrl.contains(file.getOriginalFilename()))
-                                .findFirst()
-                                .map(MultipartFile::getContentType)
-                                .orElseThrow(() -> new IllegalStateException(STR."Content type not found for file: \{mediaUrl}"));
-
-                        MediaType mediaType = contentType.startsWith("video/") ? MediaType.VIDEO : MediaType.IMAGE;
-
-                        return Media.builder()
-                                .product(productToUpdate)
-                                .url(mediaUrl)
-                                .type(mediaType)
-                                .build();
-                    }).toList();
-
-            mediaRepository.saveAll(mediaList);
+            mediaRepository.deleteAllInBatch(oldMediaList);
         }
 
+        // ------------------------------------------------------------
+        // 2️⃣ AJOUTER LES NOUVEAUX FICHIERS
+        // ------------------------------------------------------------
+        if (files != null && !files.isEmpty()) {
+            log.info("Uploading {} new files...", files.size());
+
+            List<String> uploadedUrls = minioStorageService.uploadMultipleFiles(files);
+
+            List<Media> newMediaList = new ArrayList<>();
+            for (int i = 0; i < files.size(); i++) {
+                MultipartFile file = files.get(i);
+                String uploadedUrl = uploadedUrls.get(i);
+
+                MediaType mediaType = file.getContentType() != null && file.getContentType().startsWith("video/")
+                        ? MediaType.VIDEO
+                        : MediaType.IMAGE;
+
+                Media media = Media.builder()
+                        .product(productToUpdate)
+                        .url(uploadedUrl)
+                        .type(mediaType)
+                        .build();
+
+                newMediaList.add(media);
+            }
+
+            mediaRepository.saveAll(newMediaList);
+        } else {
+            log.info("No new files sent – keeping only existingUrls.");
+        }
+
+        // 🔹 Sauvegarder le produit final
         Product updatedProduct = productRepository.save(productToUpdate);
 
         return Optional.of(
@@ -175,5 +207,6 @@ public class ProductService implements IProductService{
                         .build()
         );
     }
+
 
 }

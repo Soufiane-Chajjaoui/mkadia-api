@@ -38,12 +38,14 @@ public class ProductController {
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Integer id){
         return ResponseEntity.of(productService.getProduct(id));
     }
-    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseOperation<ProductDTO>> updateProduct(
             @RequestPart(name = "product") ProductDTO productDTO,
-            @RequestPart(name = "files" , required = false) List<MultipartFile> files
+            @RequestPart(name = "files" , required = false) List<MultipartFile> files,
+            @RequestPart(value = "existingUrls", required = false) List<String> existingUrls // URLs gardées
+
     ) throws IOException {
-        return ResponseEntity.of(productService.updateProduct(productDTO, files));
+        return ResponseEntity.of(productService.updateProduct(productDTO, files, existingUrls));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Integer id){
