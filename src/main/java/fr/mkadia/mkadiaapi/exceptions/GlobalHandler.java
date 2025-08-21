@@ -10,6 +10,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -27,12 +29,21 @@ public class GlobalHandler {
     public ProblemDetail handleAuthenticationException(AuthenticationException e){
         if (e instanceof BadCredentialsException){
             ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED , e.getMessage());
-            errorDetails.setProperty("message" , "Your email or password incorrect. Please ");
+            errorDetails.setProperty("message" , "Your email or secretKey incorrect. Please ");
             return errorDetails;
         }
         return null;
     }
 
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Object> handleHttpMediaTypeNotSupportedException(
+            HttpMediaTypeNotSupportedException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Format de média non supporté");
+        body.put("message", STR."Le format de la requête n'est pas supporté: \{ex.getMessage()}");
+        body.put("supportedTypes", ex.getSupportedMediaTypes());
+        return new ResponseEntity<>(body, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ProblemDetail handleAccessDeniedException(AccessDeniedException e){
@@ -92,7 +103,7 @@ public class GlobalHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public  ProblemDetail handlePasswordIncorrectException(PasswordIncorrectException e){
         ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND , e.getMessage());
-        errorDetails.setProperty("message" , "Password is Not match previous password");
+        errorDetails.setProperty("message" , "Password is Not match previous secretKey");
         return errorDetails;
     }
 

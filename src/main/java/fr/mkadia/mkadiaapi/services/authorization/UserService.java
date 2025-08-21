@@ -31,7 +31,7 @@ public class UserService implements IUserService{
                 .orElseThrow(() -> new EntityNotFoundException("AppUser Not Found"));
 
         log.warn(String.valueOf(rolesDTO.size()));
-        List<Long> rolesIds = rolesDTO.stream()
+        List<Integer> rolesIds = rolesDTO.stream()
                 .map(RoleDTO::getId)
                 .toList();
 
@@ -42,7 +42,7 @@ public class UserService implements IUserService{
             throw new EntityNotFoundException("these roles not found in Database Or You're not Provide them, Please Check"); // Or log and return Optional.empty()
         }
 
-        Set<Long> newRoleIds = new HashSet<>(rolesIds);
+        Set<Integer> newRoleIds = new HashSet<>(rolesIds);
         newRoleIds.removeAll(existingRoles.stream().map(Role::getId).toList());
 
         if (!newRoleIds.isEmpty()) {

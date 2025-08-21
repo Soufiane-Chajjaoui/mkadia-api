@@ -82,7 +82,7 @@ public class JwtService implements IJwtService {
     public List<String> extractRoles(UserDetails userDetails) {
         Optional<Set<Role>> roles = Optional.of(
                 Optional.ofNullable(((User) userDetails).getRoles())
-                        .orElse(Set.of(Role.builder().id(1L).build()))
+                        .orElse(Set.of(Role.builder().id(1).build()))
         );
 
         return roles.get().stream()

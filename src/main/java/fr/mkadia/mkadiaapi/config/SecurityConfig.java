@@ -6,7 +6,6 @@ import fr.mkadia.mkadiaapi.services.authentication.LogoutService;
 import fr.mkadia.mkadiaapi.services.filters.AuthFilterService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -47,8 +46,16 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         req -> {
-                            req.requestMatchers("/api/v1/auth/login" , "/api/v1/auth/register", "/api/v1/auth/forget-password", "/api/v1/auth/check-verification", "/api/v1/auth/reset-password", "/v3/api-docs", "/swagger-ui/**")
-                                    .permitAll();
+                            req.requestMatchers(
+                                    "/api/v1/auth/login",
+                                    "/api/v1/auth/register",
+                                    "/api/v1/auth/forget-secretKey",
+                                    "/api/v1/auth/check-verification",
+                                    "/api/v1/auth/reset-secretKey",
+                                    "/v3/api-docs/**",         // ✅ autoriser toutes les sous-routes
+                                    "/swagger-ui/**",          // ✅ Swagger UI
+                                    "/swagger-ui.html"         // ✅ page principale Swagger
+                            ).permitAll();
                             req.anyRequest()
                                     .authenticated();
                         }

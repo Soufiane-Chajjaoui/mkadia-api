@@ -22,17 +22,20 @@ public class MkadiaApiApplication {
     public CommandLineRunner lineRunner(RoleRepository roleRepository, AuthService authService, RoleService roleService)
     {
         return args -> {
-            roleRepository.save(Role.builder().label("ADMIN").isDefault(true).build());
-            roleRepository.save(Role.builder().label("USER").isDefault(true).build());
-            authService.registerUser(
-                    UserDTO.builder()
-                            .email("schajjaoui2003@gmail.com")
-                            .phone("+212607025329")
-                            .password("Soufianch@2211")
-                            .lastName("chajjaoui")
-                            .firstName("soufiane")
-                            .roles(roleService.getDefaultRoles().get()).build()
-            );
+            if (roleRepository.findAll().isEmpty()){
+                roleRepository.save(Role.builder().label("ADMIN").isDefault(true).build());
+                roleRepository.save(Role.builder().label("USER").isDefault(true).build());
+                authService.registerUser(
+                        UserDTO.builder()
+                                .email("schajjaoui2003@gmail.com")
+                                .phone("+212607025329")
+                                .password("Soufianch@2211")
+                                .lastName("chajjaoui")
+                                .firstName("soufiane")
+                                .roles(roleService.getDefaultRoles().get()).build()
+                );
+            }
+
         };
     }
 

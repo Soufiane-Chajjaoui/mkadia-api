@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TokenRepository extends JpaRepository<Token , Long> {
+public interface TokenRepository extends JpaRepository<Token , Integer> {
 
     Optional<Token> findByToken(String token);
 
     @Query("SELECT t from Token t WHERE t.user.id = :id and (t.expired = false or t.revoked = false) AND t.token <> :currentRefreshToken")
-    List<Token> findAllValidTokenByUser(@Param("id") Long id, @Param("currentRefreshToken") String currentRefreshToken);
+    List<Token> findAllValidTokenByUser(@Param("id") Integer id, @Param("currentRefreshToken") String currentRefreshToken);
 }
