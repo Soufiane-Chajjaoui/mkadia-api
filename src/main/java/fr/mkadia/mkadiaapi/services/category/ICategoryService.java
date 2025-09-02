@@ -17,6 +17,9 @@ import java.util.Optional;
 public interface ICategoryService {
 
     Optional<CategoryDTO> getCategory(Integer id);
+
+    Optional<List<CategoryDTO>> getCategories();
+
     Optional<ElementsOfPageDTO<CategoryDTO>> getCategories(int page , int size , String keyword);
 
     Optional<ResponseOperation<CategoryDTO>> addCategory(CategoryDTO categoryDTO, MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;

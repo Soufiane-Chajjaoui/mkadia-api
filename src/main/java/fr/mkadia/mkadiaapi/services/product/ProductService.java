@@ -2,10 +2,12 @@ package fr.mkadia.mkadiaapi.services.product;
 
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
+import fr.mkadia.mkadiaapi.dtos.mobile.ProductCardDTO;
 import fr.mkadia.mkadiaapi.entities.Category;
 import fr.mkadia.mkadiaapi.entities.Media;
 import fr.mkadia.mkadiaapi.entities.Product;
 import fr.mkadia.mkadiaapi.enums.MediaType;
+import fr.mkadia.mkadiaapi.enums.ProductStatus;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.CategoryMapper;
 import fr.mkadia.mkadiaapi.mappers.ProductMapper;
@@ -53,6 +55,26 @@ public class ProductService implements IProductService{
                 .elementsDTO(productDTOs)
                 .build();
         return Optional.of(productsPage);
+    }
+
+    @Override
+    public Optional<List<ProductCardDTO>> getBestSeller(){
+        List<Product> products = productRepository.findTop10FeaturedWithCast(ProductStatus.ACTIVE.toString(), 10);
+
+        // Set first media for each product
+        products.forEach(product -> {
+            if (product.getUrls() != null && !product.getUrls().isEmpty()) {
+                product.setUrls(List.of(product.getUrls().getFirst()));
+            } else {
+                product.setUrls(null);
+            }
+        });
+
+        List<ProductCardDTO> productDTOs = products.stream()
+                .map(productMapper::fromEntityToProductCard)
+                .collect(Collectors.toList());
+
+        return Optional.of(productDTOs);
     }
 
     @Override
