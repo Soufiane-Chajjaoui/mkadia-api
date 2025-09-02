@@ -48,6 +48,7 @@ public class SecurityConfig {
                         req -> {
                             req.requestMatchers(
                                     "/api/v1/auth/login",
+                                    "/api/v1/public/**",
                                     "/api/v1/auth/register",
                                     "/api/v1/auth/forget-secretKey",
                                     "/api/v1/auth/check-verification",

@@ -8,9 +8,7 @@ import fr.mkadia.mkadiaapi.mappers.CategoryMapper;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.CategoryRepository;
-import fr.mkadia.mkadiaapi.services.file.FileService;
 import fr.mkadia.mkadiaapi.services.file.MinioStorageService;
-import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,8 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -36,7 +32,6 @@ public class CategoryService implements ICategoryService{
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final MinioStorageService minioStorageService;
-    private final FileService fileService;
     @Override
     public Optional<CategoryDTO> getCategory(Integer id) {
         Category category = categoryRepository.findById(id).orElseThrow(
@@ -45,6 +40,14 @@ public class CategoryService implements ICategoryService{
         return Optional.of(
                 categoryMapper.fromEntity(category)
         );
+    }
+
+    @Override
+    public Optional<List<CategoryDTO>> getCategories(){
+        List<Category> categories = categoryRepository.findAll();
+        return Optional.of(categories.stream()
+                .map(categoryMapper::fromEntity)
+                .collect(Collectors.toList()));
     }
 
     @Override

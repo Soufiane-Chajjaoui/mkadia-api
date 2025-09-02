@@ -25,8 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
 public class Product {
 
     // ✅ Identifiant unique
