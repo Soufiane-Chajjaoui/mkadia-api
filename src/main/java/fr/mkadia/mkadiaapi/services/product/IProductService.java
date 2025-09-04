@@ -15,7 +15,10 @@ public interface IProductService {
 
     Optional<ElementsOfPageDTO<ProductDTO>> getProducts(int page, int size, String keyword);
 
-    Optional<List<ProductCardDTO>> getBestSeller();
+    Optional<ElementsOfPageDTO<ProductCardDTO>> getTopProducts(String status,
+                                                           int stock,
+                                                           int page,
+                                                           int size);
 
     Optional<ResponseOperation<ProductDTO>> saveProduct(ProductDTO productDTO, List<MultipartFile> files);
 
