@@ -1,6 +1,7 @@
 package fr.mkadia.mkadiaapi.controllers;
 
 import fr.mkadia.mkadiaapi.dtos.CategoryDTO;
+import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
 import fr.mkadia.mkadiaapi.dtos.mobile.ProductCardDTO;
 import fr.mkadia.mkadiaapi.services.category.CategoryService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,8 +27,11 @@ public class PublicController {
         return ResponseEntity.of(categoryService.getCategories());
     }
 
-    @GetMapping("/products/best-seller")
-    public ResponseEntity<List<ProductCardDTO>> getBestSeller(){
-        return ResponseEntity.of(productService.getBestSeller());
+    @GetMapping("/top-products")
+    public ResponseEntity<ElementsOfPageDTO<ProductCardDTO>> getTopProducts(@RequestParam(defaultValue = "ACTIVE") String status,
+                                                                            @RequestParam(name = "page" , defaultValue = "0") int page,
+                                                                            @RequestParam(name = "stock" ,required = false) int stock,
+                                                                            @RequestParam(name = "size" , defaultValue = "5")int size){
+        return ResponseEntity.of(productService.getTopProducts(status, stock, page, size));
     }
 }

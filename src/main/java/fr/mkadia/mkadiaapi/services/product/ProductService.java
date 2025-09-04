@@ -7,7 +7,6 @@ import fr.mkadia.mkadiaapi.entities.Category;
 import fr.mkadia.mkadiaapi.entities.Media;
 import fr.mkadia.mkadiaapi.entities.Product;
 import fr.mkadia.mkadiaapi.enums.MediaType;
-import fr.mkadia.mkadiaapi.enums.ProductStatus;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.CategoryMapper;
 import fr.mkadia.mkadiaapi.mappers.ProductMapper;
@@ -21,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,11 +58,15 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Optional<List<ProductCardDTO>> getBestSeller(){
-        List<Product> products = productRepository.findTop10FeaturedWithCast(ProductStatus.ACTIVE.toString(), 10);
+    public Optional<ElementsOfPageDTO<ProductCardDTO>> getTopProducts(String status,
+                                                                      int stock,
+                                                                      int page,
+                                                                      int size){
+        PageRequest  pageRequest = PageRequest.of(page, size, Sort.by("created_at").descending());
+        Page<Product> pageOfProducts = productRepository.findFeaturedProductsWithPagination(status.toUpperCase(), stock, pageRequest);
 
         // Set first media for each product
-        products.forEach(product -> {
+        pageOfProducts.forEach(product -> {
             if (product.getUrls() != null && !product.getUrls().isEmpty()) {
                 product.setUrls(List.of(product.getUrls().getFirst()));
             } else {
@@ -70,11 +74,17 @@ public class ProductService implements IProductService{
             }
         });
 
-        List<ProductCardDTO> productDTOs = products.stream()
-                .map(productMapper::fromEntityToProductCard)
-                .collect(Collectors.toList());
+        Set<ProductCardDTO> productDTOs = pageOfProducts.stream().map(productMapper::fromEntityToProductCard).collect(Collectors.toSet());
 
-        return Optional.of(productDTOs);
+        ElementsOfPageDTO<ProductCardDTO> productsPage =
+                ElementsOfPageDTO.<ProductCardDTO>builder()
+                        .totalPages(pageOfProducts.getTotalPages())
+                        .pageSize(pageOfProducts.getSize())
+                        .totalRecords(pageOfProducts.getTotalElements())
+                        .currentPage(page)
+                        .elementsDTO(productDTOs)
+                        .build();
+        return Optional.of(productsPage);
     }
 
     @Override
