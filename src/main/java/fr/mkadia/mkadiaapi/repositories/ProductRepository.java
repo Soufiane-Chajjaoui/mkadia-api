@@ -24,6 +24,19 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Page<Product> findFeaturedProductsWithPagination(@Param("status") String status,
                                                      @Param("stock") int stock,
                                                      Pageable pageable);
-
-
+    @Query(value = "SELECT * FROM products p " +
+            "WHERE p.status = CAST(:status AS product_status) " +
+            "AND p.stock >= :minStock " +
+            "AND p.category_id = :categoryId " + // CategoryId obligatoire
+            "ORDER BY " +
+            "  CASE WHEN p.is_featured = true THEN 0 ELSE 1 END, " + // Featured en premier
+            "  p.stock DESC, " +
+            "  p.created_at DESC",
+            nativeQuery = true)
+    Page<Product> findAvailableProductsByCategory(
+            @Param("status") String status,
+            @Param("minStock") int minStock,
+            @Param("categoryId") Integer categoryId,
+            Pageable pageable
+    );
 }
