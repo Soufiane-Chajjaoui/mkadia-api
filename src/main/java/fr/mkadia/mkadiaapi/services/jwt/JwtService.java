@@ -111,7 +111,6 @@ public class JwtService implements IJwtService {
         long expirationTimeMillis = System.currentTimeMillis() + expiration;
         log.info(STR."Expiration Time: \{new Date(expirationTimeMillis)}");
 
-        log.info(String.valueOf(expiration));
         return Jwts.builder().claims(extraClaims).subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(expirationTimeMillis))

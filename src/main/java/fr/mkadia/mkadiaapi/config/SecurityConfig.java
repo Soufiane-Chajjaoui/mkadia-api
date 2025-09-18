@@ -50,9 +50,10 @@ public class SecurityConfig {
                                     "/api/v1/auth/login",
                                     "/api/v1/public/**",
                                     "/api/v1/auth/register",
-                                    "/api/v1/auth/forget-secretKey",
+                                    "/api/v1/auth/forgot-password",
                                     "/api/v1/auth/check-verification",
-                                    "/api/v1/auth/reset-secretKey",
+                                    "/api/v1/auth/reset-password",
+                                    "/api/v1/auth/reset-password-mobile",
                                     "/v3/api-docs/**",         // ✅ autoriser toutes les sous-routes
                                     "/swagger-ui/**",          // ✅ Swagger UI
                                     "/swagger-ui.html"         // ✅ page principale Swagger

@@ -102,7 +102,11 @@ public class TokenService implements ITokenService {
         boolean isTokenValid = tokenRepository.findByToken(jwt).map(t -> !t.isRevoked() && !t.isExpired())
                 .orElse(false);
         if (isTokenValid){
-            return UserDTO.builder().email(user.getEmail()).build();
+            return UserDTO.builder()
+                    .email(user.getEmail())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .build();
         } else throw new AccessDeniedException("You're not allow to procedure this action");
     }
 
