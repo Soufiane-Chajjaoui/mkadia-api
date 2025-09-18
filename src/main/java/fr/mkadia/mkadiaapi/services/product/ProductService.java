@@ -65,8 +65,20 @@ public class ProductService implements IProductService{
         PageRequest  pageRequest = PageRequest.of(page, size, Sort.by("created_at").descending());
         Page<Product> pageOfProducts = productRepository.findFeaturedProductsWithPagination(status.toUpperCase(), stock, pageRequest);
 
+        ElementsOfPageDTO<ProductCardDTO> productsPage =
+                ElementsOfPageDTO.<ProductCardDTO>builder()
+                        .totalPages(pageOfProducts.getTotalPages())
+                        .pageSize(pageOfProducts.getSize())
+                        .totalRecords(pageOfProducts.getTotalElements())
+                        .currentPage(page)
+                        .elementsDTO(getSetOfProductsWithFirstMedia(pageOfProducts))
+                        .build();
+        return Optional.of(productsPage);
+    }
+
+    private Set<ProductCardDTO> getSetOfProductsWithFirstMedia(Page<Product> products){
         // Set first media for each product
-        pageOfProducts.forEach(product -> {
+        products.forEach(product -> {
             if (product.getUrls() != null && !product.getUrls().isEmpty()) {
                 product.setUrls(List.of(product.getUrls().getFirst()));
             } else {
@@ -74,17 +86,7 @@ public class ProductService implements IProductService{
             }
         });
 
-        Set<ProductCardDTO> productDTOs = pageOfProducts.stream().map(productMapper::fromEntityToProductCard).collect(Collectors.toSet());
-
-        ElementsOfPageDTO<ProductCardDTO> productsPage =
-                ElementsOfPageDTO.<ProductCardDTO>builder()
-                        .totalPages(pageOfProducts.getTotalPages())
-                        .pageSize(pageOfProducts.getSize())
-                        .totalRecords(pageOfProducts.getTotalElements())
-                        .currentPage(page)
-                        .elementsDTO(productDTOs)
-                        .build();
-        return Optional.of(productsPage);
+        return products.stream().map(productMapper::fromEntityToProductCard).collect(Collectors.toSet());
     }
 
     @Override
@@ -238,6 +240,24 @@ public class ProductService implements IProductService{
                         .object(productMapper.fromEntity(updatedProduct))
                         .build()
         );
+    }
+
+    @Override
+    public Optional<ElementsOfPageDTO<ProductCardDTO>> getProductsByCategory(String status, int page, int size, int stock, Integer categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new EntityNotFoundException("Category not found"));
+
+        Page<Product> productsOfPage = productRepository.findAvailableProductsByCategory(status, stock, category.getId(), PageRequest.of(page, size));
+
+
+        ElementsOfPageDTO<ProductCardDTO> productsPage =
+                ElementsOfPageDTO.<ProductCardDTO>builder()
+                        .totalPages(productsOfPage.getTotalPages())
+                        .pageSize(productsOfPage.getSize())
+                        .totalRecords(productsOfPage.getTotalElements())
+                        .currentPage(page)
+                        .elementsDTO(getSetOfProductsWithFirstMedia(productsOfPage))
+                        .build();
+        return Optional.of(productsPage);
     }
 
 

@@ -15,6 +15,7 @@ import fr.mkadia.mkadiaapi.repositories.UserRepository;
 import fr.mkadia.mkadiaapi.services.authorization.RoleService;
 import fr.mkadia.mkadiaapi.services.jwt.IJwtService;
 import fr.mkadia.mkadiaapi.services.jwt.ITokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -185,6 +186,5 @@ public class AuthService implements IAuthService {
                                                 .build()
                                 ).build());
     }
-
 
 }

@@ -3,6 +3,7 @@ package fr.mkadia.mkadiaapi.exceptions;
 import fr.mkadia.mkadiaapi.models.ResponseError;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,32 @@ public class GlobalHandler {
         }
         return null;
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ResponseError> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        ResponseError responseError;
+
+        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+            // Ici tu peux personnaliser le message selon la contrainte violée
+            responseError = ResponseError.builder()
+                    .message("Numéro de téléphone déjà enregistré !")
+                    .debugMessage(ex.getLocalizedMessage())
+                    .success(false)
+                    .status(HttpStatus.CONFLICT.value())
+                    .build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(responseError);
+        } else {
+            // Cas général
+            responseError = ResponseError.builder()
+                    .message("Erreur de base de données")
+                    .debugMessage(ex.getLocalizedMessage())
+                    .success(false)
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseError);
+        }
+    }
+
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<Object> handleHttpMediaTypeNotSupportedException(

@@ -31,4 +31,6 @@ public interface IProductService {
     Optional<ResponseOperation<ProductDTO>> updateProduct(ProductDTO productDTO,
                                                           List<MultipartFile> files,
                                                           List<String> existingUrls);
+
+    Optional<?> getProductsByCategory(String status, int page, int size, int stock, Integer categoryId);
 }

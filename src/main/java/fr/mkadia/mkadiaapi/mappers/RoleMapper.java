@@ -4,6 +4,7 @@ import ch.qos.logback.classic.spi.LoggingEventVO;
 import fr.mkadia.mkadiaapi.dtos.RoleDTO;
 import fr.mkadia.mkadiaapi.entities.Role;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.Set;
 public interface RoleMapper {
     RoleMapper INSTANCE = Mappers.getMapper(RoleMapper.class);
     Role fromDTO(RoleDTO roleDTO);
+    @Mapping(target = "users", ignore = true)
     RoleDTO fromEntity(Role role);
     Set<Role> fromDTOs(Set<RoleDTO> roleDTOs);
 }

@@ -3,6 +3,13 @@ server:
   servlet:
     context-path: /mkadia-api
 spring:
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
   docker:
     compose:
       lifecycle-management: start_and_stop
@@ -49,9 +56,14 @@ spring:
             trust: smtp.gmail.com
             protocols: TLSv1.2
           auth: true
+          mime:
+            charset: UTF-8
+            encodefilename: false
         debug: true
 logging:
   level:
+    org.thymeleaf: DEBUG
+    fr.mkadia: DEBUG
     web: DEBUG
     org:
       springframework:
@@ -71,16 +83,25 @@ twilio:
 # elements of Security
 jwt:
   secret: a7f4e2b1c8d5a3e1b6e8c4a5b6d8a3f5e1c6b4d8f5e1c3a7b1d878h7787e5g7u
-  expiration: 3600000 # 1 hour
+  expiration: 7200000 # 1 hour
   refresh-token:
-    expiration: 28800000 # 8 hours
+    expiration: 31557600000 # 8 hours
   reset-token:
     expiration: 1800000
 app:
   clients:
+    web:
+      reset-url: http://localhost:4200/mkadia-api/api/v1/auth/reset-password
+    mobile:
+      deep-link: mkadia://change-password
+      fallback-url: http://192.168.0.103:8080/mkadia-api/api/v1/auth/reset-password-mobile
+      scheme: mkadia
+      android-package: com.mkadia.app
+      android-store-url: https://play.google.com/store/apps/details?id=com.mkadia.app
+      ios-store-url: https://apps.apple.com/app/mkadia/id123456789
     ips:
       - name: web-client
-        ip: http://mkadia-web-client:80
+        ip: http://localhost:8080
 #      - name: mobile-client
 #        ip: http://localhost:5000
 minio:
