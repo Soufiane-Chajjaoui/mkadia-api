@@ -11,5 +11,6 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
     User fromDTO(UserDTO userDTO);
     @Mapping(target = "password" , ignore = true)
+    @Mapping(target = "tokens" , ignore = true)
     UserDTO fromEntity(User user);
 }

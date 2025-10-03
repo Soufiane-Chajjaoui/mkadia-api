@@ -5,6 +5,7 @@ import fr.mkadia.mkadiaapi.entities.Token;
 import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.enums.TokenType;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
+import fr.mkadia.mkadiaapi.models.AuthResponse;
 import fr.mkadia.mkadiaapi.models.ResponseRefreshToken;
 import fr.mkadia.mkadiaapi.repositories.TokenRepository;
 import fr.mkadia.mkadiaapi.repositories.UserRepository;
@@ -83,9 +84,10 @@ public class TokenService implements ITokenService {
                     var accessToken = jwtService.generateToken(user);
                     this.revokeTokens(user , refreshToken);
                     this.saveUserToken(user, accessToken, TokenType.ACCESS);
-                    var refreshResponse = ResponseRefreshToken.builder()
+                    var refreshResponse = AuthResponse.builder()
                             .refreshToken(refreshToken)
                             .accessToken(accessToken)
+                            .message("You has been generate new ACCESS token")
                             .build();
                     return Optional.of(refreshResponse);
                 }

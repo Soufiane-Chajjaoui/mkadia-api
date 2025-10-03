@@ -2,7 +2,7 @@ package fr.mkadia.mkadiaapi.services.product;
 
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
-import fr.mkadia.mkadiaapi.dtos.mobile.ProductCardDTO;
+import fr.mkadia.mkadiaapi.dtos.ProductCardDTO;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import org.springframework.transaction.annotation.Transactional;

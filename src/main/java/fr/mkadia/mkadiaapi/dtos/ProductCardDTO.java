@@ -1,6 +1,5 @@
-package fr.mkadia.mkadiaapi.dtos.mobile;
+package fr.mkadia.mkadiaapi.dtos;
 
-import fr.mkadia.mkadiaapi.dtos.MediaDTO;
 import fr.mkadia.mkadiaapi.enums.ProductUnit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

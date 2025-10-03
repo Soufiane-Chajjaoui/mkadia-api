@@ -3,7 +3,7 @@ package fr.mkadia.mkadiaapi.controllers;
 import fr.mkadia.mkadiaapi.dtos.CategoryDTO;
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
-import fr.mkadia.mkadiaapi.dtos.mobile.ProductCardDTO;
+import fr.mkadia.mkadiaapi.dtos.ProductCardDTO;
 import fr.mkadia.mkadiaapi.services.category.CategoryService;
 import fr.mkadia.mkadiaapi.services.product.ProductService;
 import lombok.RequiredArgsConstructor;

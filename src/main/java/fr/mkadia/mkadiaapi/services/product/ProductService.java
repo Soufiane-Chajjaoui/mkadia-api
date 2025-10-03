@@ -2,7 +2,7 @@ package fr.mkadia.mkadiaapi.services.product;
 
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
-import fr.mkadia.mkadiaapi.dtos.mobile.ProductCardDTO;
+import fr.mkadia.mkadiaapi.dtos.ProductCardDTO;
 import fr.mkadia.mkadiaapi.entities.Category;
 import fr.mkadia.mkadiaapi.entities.Media;
 import fr.mkadia.mkadiaapi.entities.Product;
@@ -77,7 +77,6 @@ public class ProductService implements IProductService{
     }
 
     private Set<ProductCardDTO> getSetOfProductsWithFirstMedia(Page<Product> products){
-        // Set first media for each product
         products.forEach(product -> {
             if (product.getUrls() != null && !product.getUrls().isEmpty()) {
                 product.setUrls(List.of(product.getUrls().getFirst()));
