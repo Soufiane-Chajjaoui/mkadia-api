@@ -5,27 +5,30 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "order_items")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class Role {
-
+@AllArgsConstructor @NoArgsConstructor @Builder
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Integer id;
-    private String label;
-    @Column(name = "is_default")
-    private Boolean isDefault = Boolean.FALSE;
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<User> users;
+    @Column(name = "order_item_id")
+    private Integer orderItemId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    private Integer quantity;
+    private BigDecimal price; // prix unitaire
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
