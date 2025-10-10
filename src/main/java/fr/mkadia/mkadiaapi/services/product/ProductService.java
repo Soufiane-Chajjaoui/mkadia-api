@@ -44,7 +44,7 @@ public class ProductService implements IProductService{
     @Override
     public Optional<ElementsOfPageDTO<ProductDTO>> getProducts(int page, int size, String keyword) {
         Page<Product> pageOfProducts = productRepository.findByNameContainingIgnoreCase(keyword, PageRequest.of(page, size));
-        Set<ProductDTO> productDTOs = pageOfProducts.stream().map(productMapper::fromEntity).collect(Collectors.toSet());
+        List<ProductDTO> productDTOs = pageOfProducts.stream().map(productMapper::fromEntity).toList();
 
         ElementsOfPageDTO<ProductDTO> productsPage =               
                 ElementsOfPageDTO.<ProductDTO>builder()
@@ -76,7 +76,7 @@ public class ProductService implements IProductService{
         return Optional.of(productsPage);
     }
 
-    private Set<ProductCardDTO> getSetOfProductsWithFirstMedia(Page<Product> products){
+    private List<ProductCardDTO> getSetOfProductsWithFirstMedia(Page<Product> products){
         products.forEach(product -> {
             if (product.getUrls() != null && !product.getUrls().isEmpty()) {
                 product.setUrls(List.of(product.getUrls().getFirst()));
@@ -85,7 +85,7 @@ public class ProductService implements IProductService{
             }
         });
 
-        return products.stream().map(productMapper::fromEntityToProductCard).collect(Collectors.toSet());
+        return products.stream().map(productMapper::fromEntityToProductCard).toList();
     }
 
     @Override
