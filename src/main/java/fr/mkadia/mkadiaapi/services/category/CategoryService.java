@@ -54,7 +54,7 @@ public class CategoryService implements ICategoryService{
     public Optional<ElementsOfPageDTO<CategoryDTO>> getCategories(int page, int size, String keyword) {
 
         Page<Category> pageOfCategories = categoryRepository.findByNameContainingIgnoreCase(keyword, PageRequest.of(page, size));
-        Set<CategoryDTO> categoriesDTOs = pageOfCategories.stream().map(categoryMapper::fromEntity).collect(Collectors.toSet());
+        List<CategoryDTO> categoriesDTOs = pageOfCategories.stream().map(categoryMapper::fromEntity).toList();
         ElementsOfPageDTO<CategoryDTO> categoriesPage =
                 ElementsOfPageDTO.<CategoryDTO>builder()
                         .totalPages(pageOfCategories.getTotalPages())

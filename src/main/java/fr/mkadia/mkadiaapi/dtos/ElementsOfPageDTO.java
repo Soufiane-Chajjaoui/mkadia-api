@@ -3,6 +3,7 @@ package fr.mkadia.mkadiaapi.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -17,5 +18,5 @@ public class ElementsOfPageDTO<T> {
     private int pageSize;
     private long totalRecords;
     @JsonProperty("elements")
-    private Set<T> elementsDTO;
+    private List<T> elementsDTO;
 }

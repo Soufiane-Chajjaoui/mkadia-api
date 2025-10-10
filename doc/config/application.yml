@@ -91,7 +91,7 @@ jwt:
 app:
   clients:
     web:
-      reset-url: http://localhost:4200/mkadia-api/api/v1/auth/reset-password
+      reset-url: http://localhost:4200/auth/reset/change-password
     mobile:
       deep-link: mkadia://change-password
       fallback-url: http://192.168.0.103:8080/mkadia-api/api/v1/auth/reset-password-mobile
@@ -101,7 +101,7 @@ app:
       ios-store-url: https://apps.apple.com/app/mkadia/id123456789
     ips:
       - name: web-client
-        ip: http://localhost:8080
+        ip: http://localhost:4200
 #      - name: mobile-client
 #        ip: http://localhost:5000
 minio:

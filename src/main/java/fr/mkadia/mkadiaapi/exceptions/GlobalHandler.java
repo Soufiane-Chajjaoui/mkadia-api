@@ -1,7 +1,6 @@
 package fr.mkadia.mkadiaapi.exceptions;
 
 import fr.mkadia.mkadiaapi.models.ResponseError;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -27,10 +26,10 @@ import java.util.stream.Collectors;
 public class GlobalHandler {
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ProblemDetail handleAuthenticationException(AuthenticationException e){
-        if (e instanceof BadCredentialsException){
-            ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED , e.getMessage());
-            errorDetails.setProperty("message" , "Your email or secretKey incorrect. Please ");
+    public ProblemDetail handleAuthenticationException(AuthenticationException e) {
+        if (e instanceof BadCredentialsException) {
+            ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+            errorDetails.setProperty("message", "Your email or secretKey incorrect. Please ");
             return errorDetails;
         }
         return null;
@@ -71,24 +70,26 @@ public class GlobalHandler {
         body.put("supportedTypes", ex.getSupportedMediaTypes());
         return new ResponseEntity<>(body, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
+
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ProblemDetail handleAccessDeniedException(AccessDeniedException e){
-        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN , e.getMessage());
-        errorDetails.setProperty("message" , "You are Not Authorize for this Resources");
+    public ProblemDetail handleAccessDeniedException(AccessDeniedException e) {
+        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        errorDetails.setProperty("message", "You are Not Authorize for this Resources");
         return errorDetails;
     }
 
     @ExceptionHandler(UnsupportedException.class)
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public ProblemDetail FileForbiddenException(UnsupportedException e){
-        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNSUPPORTED_MEDIA_TYPE , e.getMessage());
-        errorDetails.setProperty("message" , e.getMessage());
+    public ProblemDetail FileForbiddenException(UnsupportedException e) {
+        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+        errorDetails.setProperty("message", e.getMessage());
         return errorDetails;
     }
+
     @ExceptionHandler(EntityExistedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ResponseError> handlEntityExisted(EntityExistedException e){
+    public ResponseEntity<ResponseError> handlEntityExisted(EntityExistedException e) {
         ResponseError responseError = ResponseError.builder().message(e.getMessage())
                 .debugMessage(e.getLocalizedMessage())
                 .success(false)
@@ -99,7 +100,7 @@ public class GlobalHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ResponseError> handleEntityNotFound(EntityNotFoundException e){
+    public ResponseEntity<ResponseError> handleEntityNotFound(EntityNotFoundException e) {
         ResponseError responseError = ResponseError.builder().message(e.getMessage())
                 .debugMessage(e.getLocalizedMessage())
                 .success(false)
@@ -112,8 +113,8 @@ public class GlobalHandler {
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ProblemDetail handleJwtException(JwtException ex) {
-        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED , ex.getMessage());
-        errorDetails.setProperty("message" , "Your Session Has Expired, Go to Authentication Page");
+        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        errorDetails.setProperty("message", "Your Session Has Expired, Go to Authentication Page");
         errorDetails.setTitle("Expiration SESSION");
         errorDetails.setType(URI.create("Expiration"));
         return errorDetails;
@@ -121,22 +122,22 @@ public class GlobalHandler {
 
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String , String>> handleNotValidArg(MethodArgumentNotValidException e){
+    public ResponseEntity<Map<String, String>> handleNotValidArg(MethodArgumentNotValidException e) {
         return new ResponseEntity<Map<String, String>>(e.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(FieldError::getField , FieldError::getDefaultMessage)) , HttpStatus.BAD_REQUEST);
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PasswordIncorrectException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public  ProblemDetail handlePasswordIncorrectException(PasswordIncorrectException e){
-        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND , e.getMessage());
-        errorDetails.setProperty("message" , "Password is Not match previous secretKey");
+    public ProblemDetail handlePasswordIncorrectException(PasswordIncorrectException e) {
+        ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        errorDetails.setProperty("message", "Password is Not match previous secretKey");
         return errorDetails;
     }
 
     @ExceptionHandler(VerificationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ResponseError> handleVerificationOtp(VerificationException e){
+    public ResponseEntity<ResponseError> handleVerificationOtp(VerificationException e) {
         ResponseError responseError = ResponseError.builder().message(e.getMessage())
                 .debugMessage(e.getLocalizedMessage())
                 .success(false)
@@ -145,4 +146,24 @@ public class GlobalHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
+
+    @ExceptionHandler(InvalidCouponException.class)
+    public ResponseEntity<ResponseError> handleInvalidCoupon(InvalidCouponException ex) {
+        ResponseError error = ResponseError.builder()
+                .message(ex.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.badRequest().body(error);
+    }
+
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<Map<String, String>> handleValidationExceptions(
+//            MethodArgumentNotValidException ex) {
+//        Map<String, String> errors = new HashMap<>();
+//        ex.getBindingResult().getFieldErrors().forEach(error ->
+//                errors.put(error.getField(), error.getDefaultMessage())
+//        );
+//        return ResponseEntity.badRequest().body(errors);
+//    }
 }

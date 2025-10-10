@@ -111,7 +111,7 @@ public class MailService {
                     .findFirst()
                     .orElse(webResetUrl);
 
-            String resetUrl = String.format("%s?reset-token=%s", webClientIpAddress, resetToken);
+            String resetUrl = String.format("%s?reset-token=%s", webResetUrl, resetToken);
 
             context.setVariable("resetUrl", resetUrl);
             context.setVariable("clientType", "web");
