@@ -16,16 +16,21 @@ import fr.mkadia.mkadiaapi.repositories.CategoryRepository;
 import fr.mkadia.mkadiaapi.repositories.MediaRepository;
 import fr.mkadia.mkadiaapi.repositories.ProductRepository;
 import fr.mkadia.mkadiaapi.services.file.MinioStorageService;
+import fr.mkadia.mkadiaapi.specifications.ProductSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -41,19 +46,34 @@ public class ProductService implements IProductService{
     private final MinioStorageService minioStorageService;
     private final CategoryMapper categoryMapper;
 
-    @Override
-    public Optional<ElementsOfPageDTO<ProductDTO>> getProducts(int page, int size, String keyword) {
-        Page<Product> pageOfProducts = productRepository.findByNameContainingIgnoreCase(keyword, PageRequest.of(page, size));
-        List<ProductDTO> productDTOs = pageOfProducts.stream().map(productMapper::fromEntity).toList();
 
-        ElementsOfPageDTO<ProductDTO> productsPage =               
+    @Override
+    public Optional<ElementsOfPageDTO<ProductDTO>> getProducts(
+            String search,
+            Integer categoryId,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            String status,
+            String stockStatus,
+            LocalDate createdAfter,
+            LocalDate createdBefore,
+            Pageable pageable
+    ) {
+        Specification<Product> spec = ProductSpecification.filterProducts(
+                search, categoryId, minPrice, maxPrice, status, stockStatus,
+                createdAfter, createdBefore
+        );
+
+        Page<Product> products = productRepository.findAll(spec, pageable);
+        List<ProductDTO> productDTOs = products.stream().map(productMapper::fromEntity).toList();
+        ElementsOfPageDTO<ProductDTO> productsPage =
                 ElementsOfPageDTO.<ProductDTO>builder()
-                .totalPages(pageOfProducts.getTotalPages())
-                .pageSize(pageOfProducts.getSize())
-                .totalRecords(pageOfProducts.getTotalElements())
-                .currentPage(page)
-                .elementsDTO(productDTOs)
-                .build();
+                        .totalPages(products.getTotalPages())
+                        .pageSize(products.getSize())
+                        .totalRecords(products.getTotalElements())
+                        .currentPage(pageable.getPageNumber())
+                        .elementsDTO(productDTOs)
+                        .build();
         return Optional.of(productsPage);
     }
 
