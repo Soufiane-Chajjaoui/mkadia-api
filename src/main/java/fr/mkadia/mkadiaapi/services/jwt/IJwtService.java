@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.services.jwt;
 
+import fr.mkadia.mkadiaapi.enums.RoleLabel;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,7 +21,7 @@ public interface IJwtService {
 
     String generateResetToken(UserDetails userDetails);
 
-    List<String> extractRoles(UserDetails userDetails);
+    List<RoleLabel> extractRoles(UserDetails userDetails);
 
     public boolean isTokenValid(String token , UserDetails userDetails);
     public boolean isTokenExpired(String token) ;

@@ -35,7 +35,7 @@ public class UserService implements IUserService{
                 .map(RoleDTO::getId)
                 .toList();
 
-        Set<Role> existingRoles = roleMapper.fromDTOs(new HashSet<RoleDTO>(roleService.getRolesByIDs(rolesIds).get()));
+        List<Role> existingRoles = roleMapper.fromDTOs(roleService.getRolesByIDs(rolesIds).get());
 
         if (CollectionUtils.isEmpty(existingRoles)) {
 
@@ -46,8 +46,8 @@ public class UserService implements IUserService{
         newRoleIds.removeAll(existingRoles.stream().map(Role::getId).toList());
 
         if (!newRoleIds.isEmpty()) {
-            Set<Role> newRolesDB = roleMapper.fromDTOs(
-                    new HashSet<RoleDTO>(roleService.getRolesByIDs(new ArrayList<>(newRoleIds)).get())
+            List<Role> newRolesDB = roleMapper.fromDTOs(
+                    roleService.getRolesByIDs(new ArrayList<>(newRoleIds)).get()
             );
             if (CollectionUtils.isEmpty(newRolesDB)) {
 

@@ -12,7 +12,7 @@ public interface IRoleService {
     Optional<ResponseOperation<RoleDTO>> addRole(RoleDTO roleDTO);
     Optional<RoleDTO> getRole(Integer idRole);
 
-    Optional<Set<RoleDTO>> getDefaultRoles();
+    Optional<List<RoleDTO>> getDefaultRoles();
     Optional<ResponseOperation<Boolean>> deleteRole(Integer idRole);
 
     Optional<List<RoleDTO>> getRolesByIDs(List<Integer> IDs);

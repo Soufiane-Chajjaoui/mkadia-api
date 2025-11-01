@@ -20,7 +20,7 @@ public class OrderItemService implements IOrderItemService {
     private final ProductMapper productMapper;
     private final OrderItemMapper orderItemMapper;
     private final OrderMapper orderMapper;
-    private final OrderService orderService;
+    private final IOrderService orderService;
     @Override
     public OrderItemDTO addOrderItem(OrderDTO order, ProductDTO product, int quantity) {
         OrderItem orderItem = OrderItem.builder()

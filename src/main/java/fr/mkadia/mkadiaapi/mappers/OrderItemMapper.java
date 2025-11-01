@@ -1,16 +1,21 @@
 package fr.mkadia.mkadiaapi.mappers;
 
 import fr.mkadia.mkadiaapi.dtos.OrderItemDTO;
+import fr.mkadia.mkadiaapi.dtos.OrderItemSimpleDTO;
 import fr.mkadia.mkadiaapi.entities.OrderItem;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring" , uses = {OrderMapper.class})
+@Mapper(componentModel = "spring", uses = {ProductMapper.class})
 public interface OrderItemMapper {
-    OrderItemMapper INSTANCE = Mappers.getMapper(OrderItemMapper.class);
+
+    @Mapping(target = "order", ignore = true)  // 🔥 NE PAS mapper Order dans OrderItemDTO
     OrderItemDTO fromEntity(OrderItem orderItem);
+    OrderItemSimpleDTO toOrderItemSimpleDTO(OrderItem orderItem);
     OrderItem fromDTO(OrderItemDTO orderItemDTO);
-    List<OrderItemDTO> fromEntities(List<OrderItem> items);
+    @Mapping(target = "order", ignore = true)
+    List<OrderItemDTO> fromEntities(List<OrderItem> orderItems);
 }

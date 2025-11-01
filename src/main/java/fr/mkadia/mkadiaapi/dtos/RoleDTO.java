@@ -1,6 +1,7 @@
 package fr.mkadia.mkadiaapi.dtos;
 
 
+import fr.mkadia.mkadiaapi.enums.RoleLabel;
 import lombok.*;
 
 import java.util.Set;
@@ -9,7 +10,7 @@ import java.util.Set;
 @AllArgsConstructor @NoArgsConstructor @Builder
 public class RoleDTO {
     private Integer id;
-    private String label;
+    private RoleLabel label;
     private Boolean isDefault;
     private Set<UserDTO> users;
 }

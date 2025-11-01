@@ -1,10 +1,10 @@
 package fr.mkadia.mkadiaapi.dtos;
 
-import fr.mkadia.mkadiaapi.entities.Order;
-import fr.mkadia.mkadiaapi.entities.Product;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Data
 public class OrderItemDTO {
     private Integer orderItemId;
     private OrderDTO order;

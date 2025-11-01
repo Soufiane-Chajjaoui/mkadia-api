@@ -7,13 +7,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring" , uses = {UserMapper.class})
+@Mapper(componentModel = "spring")
 public interface RoleMapper {
-    RoleMapper INSTANCE = Mappers.getMapper(RoleMapper.class);
-    Role fromDTO(RoleDTO roleDTO);
-    @Mapping(target = "users", ignore = true)
+
+    @Mapping(target = "users", ignore = true)  // 🔥 NE PAS mapper les users dans RoleDTO
     RoleDTO fromEntity(Role role);
-    Set<Role> fromDTOs(Set<RoleDTO> roleDTOs);
+    List<Role> fromDTOs(List<RoleDTO> rolesDtos);
+    Role fromDTO(RoleDTO roleDTO);
 }

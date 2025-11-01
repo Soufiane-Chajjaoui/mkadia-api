@@ -3,6 +3,7 @@ package fr.mkadia.mkadiaapi.mappers;
 import fr.mkadia.mkadiaapi.dtos.CartItemProductDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductCardDTO;
+import fr.mkadia.mkadiaapi.dtos.ProductSimpleDTO;
 import fr.mkadia.mkadiaapi.entities.Media;
 import fr.mkadia.mkadiaapi.entities.Product;
 import org.mapstruct.Mapper;
@@ -28,6 +29,8 @@ public interface ProductMapper {
     @Mapping(source = "discountPercentage", target = "discount")
     @Mapping(source = "urls", target = "image", qualifiedByName = "getFirstMediaOfList")
     CartItemProductDTO fromEntityToCartItemProductDTO(Product product);
+
+    ProductSimpleDTO toProductSimpleDTO(Product product);
 
     @Named("getFirstMediaOfList")
     default String getFirstMediaOfList(List<Media> urls) {

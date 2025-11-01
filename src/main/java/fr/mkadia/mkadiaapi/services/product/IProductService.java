@@ -5,15 +5,26 @@ import fr.mkadia.mkadiaapi.dtos.ProductDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductCardDTO;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface IProductService {
 
-    Optional<ElementsOfPageDTO<ProductDTO>> getProducts(int page, int size, String keyword);
+    Optional<ElementsOfPageDTO<ProductDTO>> getProducts(String search,
+                                                        Integer categoryId,
+                                                        BigDecimal minPrice,
+                                                        BigDecimal maxPrice,
+                                                        String status,
+                                                        String stockStatus,
+                                                        LocalDate createdAfter,
+                                                        LocalDate createdBefore,
+                                                        Pageable pageable);
 
     Optional<ElementsOfPageDTO<ProductCardDTO>> getTopProducts(String status,
                                                            int stock,

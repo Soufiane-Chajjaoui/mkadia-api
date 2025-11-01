@@ -40,14 +40,14 @@ public class RoleService implements IRoleService{
     @Override
     public Optional<ResponseOperation<RoleDTO>> addRole(RoleDTO roleDTO) {
 
-        Optional<Role> roleExisting = roleRepository.findFirstByLabelContainingOrderByLabelAsc(roleDTO.getLabel()) ;
+        Optional<Role> roleExisting = roleRepository.findFirstByLabelContainingOrderByLabelAsc(String.valueOf(roleDTO.getLabel())) ;
 
         if (roleExisting.isPresent()){
             throw new EntityExistedException("This Role Already Existed");
         }
 
         Role role = roleMapper.fromDTO(roleDTO);
-        role.setLabel(roleDTO.getLabel().toUpperCase());
+        role.setLabel(roleDTO.getLabel());
 
         return Optional.ofNullable(
                 ResponseOperation.<RoleDTO>builder()
@@ -67,9 +67,9 @@ public class RoleService implements IRoleService{
         return Optional.ofNullable(roleMapper.fromEntity(role));
     }
     @Override
-    public Optional<Set<RoleDTO>> getDefaultRoles(){
+    public Optional<List<RoleDTO>> getDefaultRoles(){
         Set<Role> roles = roleRepository.findAllByIsDefaultTrue();
-        return Optional.of(roles.stream().map(roleMapper::fromEntity).collect(Collectors.toSet()));
+        return Optional.of(roles.stream().map(roleMapper::fromEntity).collect(Collectors.toList()));
     }
 
     @Override
