@@ -29,7 +29,7 @@ public class GlobalHandler {
     public ProblemDetail handleAuthenticationException(AuthenticationException e) {
         if (e instanceof BadCredentialsException) {
             ProblemDetail errorDetails = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
-            errorDetails.setProperty("message", "Your email or secretKey incorrect. Please ");
+            errorDetails.setProperty("message", "Your email or secret incorrect. Please ");
             return errorDetails;
         }
         return null;
@@ -155,6 +155,23 @@ public class GlobalHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(StockInsuffisantException.class)
+    public ResponseEntity<ResponseError> handleInvalidCoupon(StockInsuffisantException ex) {
+        ResponseError error = ResponseError.builder()
+                .message(ex.getMessage())
+                .status(HttpStatus.CONFLICT.value())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String, String>> handleUnauthorized(UnauthorizedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
 //    @ExceptionHandler(MethodArgumentNotValidException.class)

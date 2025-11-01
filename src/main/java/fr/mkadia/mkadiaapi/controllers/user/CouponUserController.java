@@ -1,9 +1,7 @@
 package fr.mkadia.mkadiaapi.controllers.user;
 
-import fr.mkadia.mkadiaapi.dtos.CouponDTO;
 import fr.mkadia.mkadiaapi.entities.Coupon;
 import fr.mkadia.mkadiaapi.enums.DiscountType;
-import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.exceptions.InvalidCouponException;
 import fr.mkadia.mkadiaapi.mappers.CouponMapper;
 import fr.mkadia.mkadiaapi.models.ApplyCouponRequest;
@@ -30,7 +28,7 @@ public class CouponUserController {
     public ResponseEntity<CouponResponse> applyCoupon(@Valid @RequestBody ApplyCouponRequest request) {
         try {
             // Vérifier la validité du coupon
-            Coupon coupon = couponService.verifyCouponByCode(request.getCode());
+            Coupon coupon = couponService.validateCoupon(request.getCode(), request.getCartAmount());
 
             // Calculer la réduction
             BigDecimal discount = couponService.calculateDiscount(coupon, request.getCartAmount());
@@ -63,7 +61,7 @@ public class CouponUserController {
             @PathVariable String code,
             @RequestParam BigDecimal cartAmount) {
 
-        Coupon coupon = couponService.verifyCouponByCode(code);
+        Coupon coupon = couponService.validateCoupon(code, cartAmount);
         BigDecimal discount = couponService.calculateDiscount(coupon, cartAmount);
 
         CouponResponse response = CouponResponse.builder()

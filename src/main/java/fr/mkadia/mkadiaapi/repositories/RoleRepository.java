@@ -13,5 +13,4 @@ public interface RoleRepository extends JpaRepository<Role,Integer> {
     List<Role> findAllByIdIn(List<Integer> IDs);
     Optional<Role> findFirstByLabelContainingOrderByLabelAsc(String label);
     Set<Role> findAllByIsDefaultTrue();
-
 }

@@ -3,9 +3,13 @@ package fr.mkadia.mkadiaapi.entities;
 import fr.mkadia.mkadiaapi.enums.MediaType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "media")
@@ -32,4 +36,12 @@ public class Media {
             , foreignKey = @ForeignKey(name = "fk_media_product"))
     private Product product;
     private Integer position;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 }

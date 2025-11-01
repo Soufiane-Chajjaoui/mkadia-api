@@ -1,5 +1,8 @@
 package fr.mkadia.mkadiaapi.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import fr.mkadia.mkadiaapi.entities.Delivery;
+import fr.mkadia.mkadiaapi.entities.Payment;
 import fr.mkadia.mkadiaapi.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,9 +20,15 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class OrderDTO {
-    private Long orderId;
+    private Long id;
     private UserDTO user;
+    private BigDecimal subTotal;
     private BigDecimal totalAmount;
+    private BigDecimal discountAmount;
+    private PaymentDTO payment;
+    private AddressDTO address;
+    @JsonIgnore
+    private DeliveryDTO delivery;
     private OrderStatus status; // PENDING, PAID, SHIPPED, DELIVERED, CANCELED
     private Set<OrderItemDTO> items;
     private LocalDateTime createdAt;

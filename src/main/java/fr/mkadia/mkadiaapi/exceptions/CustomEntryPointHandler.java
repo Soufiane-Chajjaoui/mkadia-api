@@ -27,7 +27,7 @@ public class CustomEntryPointHandler implements AuthenticationEntryPoint {
         log.error("Error ::::: {} ::: {}", response.getStatus(), authException.getMessage());
         responseBody.put("timestamp", System.currentTimeMillis());
         responseBody.put("status", response.getStatus());
-        responseBody.put("error", "Unauthorized");
+        responseBody.put("error", "unauthorized");
 
         switch (response.getStatus()) {
             case 401:
@@ -39,8 +39,8 @@ public class CustomEntryPointHandler implements AuthenticationEntryPoint {
                 responseBody.put("redirect", "http://localhost:8888/**/refresh-token");
                 break;
             case 403:
-                responseBody.put("message", STR."\{authException.getMessage()} Your token has been revoked");
-                responseBody.put("error", "Unauthorized");
+                responseBody.put("message", STR."\{authException.getMessage()} You don't have permissions to access this page :(.");
+                responseBody.put("error", "forbidden");
                 break;
             default:
                 responseBody.put("message", authException.getMessage());

@@ -24,7 +24,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Objects;
 
-import static java.lang.StringTemplate.STR;
 
 @Service
 @Slf4j
@@ -36,7 +35,6 @@ public class AuthFilterService extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        log.info("from doFilterInternal");
         final String authHeader = request.getHeader("Authorization");
         final String tokenType = request.getHeader("Token-Type");
         final String jwt;
@@ -54,7 +52,7 @@ public class AuthFilterService extends OncePerRequestFilter {
         log.info(String.valueOf(isTokenValid));
 
         if (!isTokenValid) {
-            responseWrapper.setStatus(HttpStatus.FORBIDDEN.value());
+            responseWrapper.setStatus(HttpStatus.UNAUTHORIZED.value());
             filterChain.doFilter(request, responseWrapper);
             return;
         }

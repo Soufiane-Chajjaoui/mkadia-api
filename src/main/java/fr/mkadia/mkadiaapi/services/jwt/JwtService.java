@@ -2,6 +2,7 @@ package fr.mkadia.mkadiaapi.services.jwt;
 
 import fr.mkadia.mkadiaapi.entities.Role;
 import fr.mkadia.mkadiaapi.entities.User;
+import fr.mkadia.mkadiaapi.enums.RoleLabel;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -59,7 +60,7 @@ public class JwtService implements IJwtService {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-        List<String> rolesExtracted = this.extractRoles(userDetails);
+        List<RoleLabel> rolesExtracted = this.extractRoles(userDetails);
         claims.put("roles", rolesExtracted);
         return buildToken(claims, userDetails, this.jwtExpiration);
     }
@@ -73,16 +74,16 @@ public class JwtService implements IJwtService {
     public String generateResetToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-        List<String> rolesExtracted = this.extractRoles(userDetails);
+        List<RoleLabel> rolesExtracted = this.extractRoles(userDetails);
         claims.put("roles", rolesExtracted);
         return buildToken(claims, userDetails, this.resetExpiration);
     }
 
     @Override
-    public List<String> extractRoles(UserDetails userDetails) {
-        Optional<Set<Role>> roles = Optional.of(
+    public List<RoleLabel> extractRoles(UserDetails userDetails) {
+        Optional<List<Role>> roles = Optional.of(
                 Optional.ofNullable(((User) userDetails).getRoles())
-                        .orElse(Set.of(Role.builder().id(1).build()))
+                        .orElse(List.of(Role.builder().id(1).build()))
         );
 
         return roles.get().stream()

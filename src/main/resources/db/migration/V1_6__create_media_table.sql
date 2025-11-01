@@ -1,7 +1,9 @@
 CREATE TABLE media (
     media_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     media_type type_of_media,
-    url TEXT NOT NULL
+    url TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE media

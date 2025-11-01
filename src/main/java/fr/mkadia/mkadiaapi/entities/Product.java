@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -69,9 +71,8 @@ public class Product {
 
     // ✅ Statut : ACTIVE, INACTIVE, DRAFT
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, columnDefinition = "product_status")
+    @Column(name = "status", nullable = false)
     private ProductStatus status;
-
 
     // ✅ Mise en avant
     @Column(name = "is_new")
@@ -106,10 +107,11 @@ public class Product {
             orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Media> urls = new ArrayList<>();
 
-    // ✅ Timestamps
-    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 }

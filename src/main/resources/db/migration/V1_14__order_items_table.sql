@@ -6,6 +6,10 @@ CREATE TABLE Order_Items (
     price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+    CONSTRAINT fk_order_item_order
+        FOREIGN KEY (order_id) REFERENCES orders (order_id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_order_item_product
+        FOREIGN KEY (product_id) REFERENCES products (product_id)
+            ON DELETE CASCADE
 );

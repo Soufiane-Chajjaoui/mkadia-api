@@ -2,6 +2,7 @@ package fr.mkadia.mkadiaapi;
 
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.Role;
+import fr.mkadia.mkadiaapi.enums.RoleLabel;
 import fr.mkadia.mkadiaapi.repositories.RoleRepository;
 import fr.mkadia.mkadiaapi.services.authentication.AuthService;
 import fr.mkadia.mkadiaapi.services.authorization.RoleService;
@@ -23,8 +24,9 @@ public class MkadiaApiApplication {
     {
         return args -> {
             if (roleRepository.findAll().isEmpty()){
-                roleRepository.save(Role.builder().label("ADMIN").isDefault(true).build());
-                roleRepository.save(Role.builder().label("USER").isDefault(true).build());
+                roleRepository.save(Role.builder().label(RoleLabel.ADMIN).isDefault(true).build());
+                roleRepository.save(Role.builder().label(RoleLabel.DELIVERY).isDefault(true).build());
+                roleRepository.save(Role.builder().label(RoleLabel.USER).isDefault(true).build());
                 authService.registerUser(
                         UserDTO.builder()
                                 .email("schajjaoui2003@gmail.com")

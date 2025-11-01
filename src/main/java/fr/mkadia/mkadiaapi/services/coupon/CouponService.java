@@ -11,6 +11,7 @@ import fr.mkadia.mkadiaapi.mappers.CouponMapper;
 import fr.mkadia.mkadiaapi.repositories.CouponRepository;
 import fr.mkadia.mkadiaapi.specifications.CouponSpecifications;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CouponService {
 
     private final CouponRepository couponRepository;
@@ -48,40 +50,45 @@ public class CouponService {
     /**
      * Vérifier la validité d'un coupon
      */
-    public Coupon verifyCouponByCode(String code) {
-        Coupon coupon = couponRepository.findByCode(code.toUpperCase())
-                .orElseThrow(() -> new InvalidCouponException("Code promo invalide"));
+    public Coupon validateCoupon(String code, BigDecimal orderAmount) {
+        log.info("Validating coupon: {}", code);
 
-        // Vérifier si actif
-        if (!coupon.isActive()) {
-            throw new InvalidCouponException("Ce code promo n'est plus actif");
+        Coupon coupon = couponRepository.findByCodeAndActiveTrue(code)
+                .orElseThrow(() -> new InvalidCouponException("Code coupon invalide ou inactif"));
+
+        // Vérifier la date de début
+        if (coupon.getStartDate() != null && LocalDate.now().isBefore(coupon.getStartDate())) {
+            throw new InvalidCouponException("Ce coupon n'est pas encore actif");
         }
 
-        // Vérifier les dates
-        LocalDate now = LocalDate.now();
-        if (coupon.getStartDate() != null && now.isBefore(coupon.getStartDate())) {
-            throw new InvalidCouponException("Ce code promo n'est pas encore valide");
-        }
-        if (coupon.getEndDate() != null && now.isAfter(coupon.getEndDate())) {
-            throw new InvalidCouponException("Ce code promo a expiré");
+        // Vérifier la date de fin
+        if (coupon.getEndDate() != null && LocalDate.now().isAfter(coupon.getEndDate())) {
+            throw new InvalidCouponException("Ce coupon a expiré");
         }
 
         // Vérifier la limite d'utilisation
-        if (coupon.getUsageLimit() != null &&
-                coupon.getUsageCount() >= coupon.getUsageLimit()) {
-            throw new InvalidCouponException("Ce code promo a atteint sa limite d'utilisation");
+        if (coupon.getUsageLimit() != null && coupon.getUsageCount() >= coupon.getUsageLimit()) {
+            throw new InvalidCouponException("Ce coupon a atteint sa limite d'utilisation");
         }
 
+        // Vérifier le montant minimum de commande
+        if (coupon.getMinOrderAmount() != null && orderAmount.compareTo(coupon.getMinOrderAmount()) < 0) {
+            throw new InvalidCouponException(
+                    String.format("Montant minimum requis: %.2f DH", coupon.getMinOrderAmount())
+            );
+        }
+
+        log.info("Coupon {} validated successfully", code);
         return coupon;
     }
 
     /**
      * Calculer la réduction
      */
-    public BigDecimal calculateDiscount(Coupon coupon, BigDecimal cartAmount) {
+    public BigDecimal calculateDiscount(Coupon coupon, BigDecimal amount) {
         // Vérifier le montant minimum
         if (coupon.getMinOrderAmount() != null &&
-                cartAmount.compareTo(coupon.getMinOrderAmount()) < 0) {
+                amount.compareTo(coupon.getMinOrderAmount()) < 0) {
             throw new InvalidCouponException(
                     String.format("Montant minimum requis: %.2f€", coupon.getMinOrderAmount())
             );
@@ -91,7 +98,7 @@ public class CouponService {
 
         if (coupon.getDiscountType() == DiscountType.PERCENTAGE) {
             // Réduction en pourcentage
-            discount = cartAmount.multiply(coupon.getDiscountValue())
+            discount = amount.multiply(coupon.getDiscountValue())
                     .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
             // Appliquer la réduction maximale si définie
@@ -104,8 +111,8 @@ public class CouponService {
             discount = coupon.getDiscountValue();
 
             // S'assurer que la réduction ne dépasse pas le montant du panier
-            if (discount.compareTo(cartAmount) > 0) {
-                discount = cartAmount;
+            if (discount.compareTo(amount) > 0) {
+                discount = amount;
             }
         }
 
@@ -124,17 +131,13 @@ public class CouponService {
      * Incrémenter le compteur d'utilisation lors de la commande
      */
     @Transactional
-    public void incrementUsageCount(String code) {
-        Coupon coupon = couponRepository.findByCode(code.toUpperCase())
-                .orElseThrow(() -> new EntityNotFoundException("Code promo introuvable"));
-
-        coupon.setUsageCount(coupon.getUsageCount() + 1);
+    public void incrementUsage(Coupon coupon) {
+        coupon.incrementUsage();
         couponRepository.save(coupon);
+        log.info("Coupon {} usage incremented to {}", coupon.getCode(), coupon.getUsageCount());
     }
 
     public CouponDTO createCoupon(CouponDTO couponDTO) {
-
-
         Coupon coupon = couponMapper.fromDTO(couponDTO);
         if (DiscountType.FREE_DELIVERY == couponDTO.getDiscountType()) {
             coupon.setDiscountValue(null);

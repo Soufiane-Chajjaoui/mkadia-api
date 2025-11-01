@@ -45,11 +45,11 @@ public class ProductController {
             @RequestParam(defaultValue = "createdAt,desc") String[] sort
     ) {
         // Créer le Pageable avec tri
-        Sort sortOrder = Sort.by(
+        Sort sortProduct = Sort.by(
                 sort[1].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
                 sort[0]
         );
-        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Pageable pageable = PageRequest.of(page, size, sortProduct);
 
         // Appeler le service avec tous les filtres
         Optional<ElementsOfPageDTO<ProductDTO>> products = productService.getProducts(

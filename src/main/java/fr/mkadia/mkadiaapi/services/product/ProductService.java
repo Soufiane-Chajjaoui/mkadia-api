@@ -44,7 +44,6 @@ public class ProductService implements IProductService{
     private final MediaRepository mediaRepository;
     private final CategoryRepository categoryRepository;
     private final MinioStorageService minioStorageService;
-    private final CategoryMapper categoryMapper;
 
 
     @Override
@@ -65,7 +64,9 @@ public class ProductService implements IProductService{
         );
 
         Page<Product> products = productRepository.findAll(spec, pageable);
+
         List<ProductDTO> productDTOs = products.stream().map(productMapper::fromEntity).toList();
+
         ElementsOfPageDTO<ProductDTO> productsPage =
                 ElementsOfPageDTO.<ProductDTO>builder()
                         .totalPages(products.getTotalPages())
@@ -83,7 +84,7 @@ public class ProductService implements IProductService{
                                                                       int page,
                                                                       int size){
         PageRequest  pageRequest = PageRequest.of(page, size, Sort.by("created_at").descending());
-        Page<Product> pageOfProducts = productRepository.findFeaturedProductsWithPagination(status.toUpperCase(), stock, pageRequest);
+        Page<Product> pageOfProducts = productRepository.findFeaturedProductsWithPagination(status, stock, pageRequest);
 
         ElementsOfPageDTO<ProductCardDTO> productsPage =
                 ElementsOfPageDTO.<ProductCardDTO>builder()
