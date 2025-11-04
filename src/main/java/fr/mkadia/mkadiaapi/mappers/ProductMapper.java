@@ -30,6 +30,7 @@ public interface ProductMapper {
     @Mapping(source = "urls", target = "image", qualifiedByName = "getFirstMediaOfList")
     CartItemProductDTO fromEntityToCartItemProductDTO(Product product);
 
+    @Mapping(source = "discountPercentage", target = "discount")
     ProductSimpleDTO toProductSimpleDTO(Product product);
 
     @Named("getFirstMediaOfList")

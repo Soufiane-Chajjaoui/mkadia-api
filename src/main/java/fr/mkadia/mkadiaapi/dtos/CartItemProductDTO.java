@@ -22,6 +22,6 @@ public class CartItemProductDTO {
     private int quantity;
     private LocalDate expirationDate;
     private String image;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime createdAt ;
+    private LocalDateTime updatedAt;
 }

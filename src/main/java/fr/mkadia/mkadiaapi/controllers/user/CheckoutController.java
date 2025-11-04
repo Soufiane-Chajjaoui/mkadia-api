@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/checkout")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('USER')")
 @Tag(name = "Checkout", description = "API de gestion des commandes")  // ⚠️ AJOUTEZ CECI
 public class CheckoutController {
 
