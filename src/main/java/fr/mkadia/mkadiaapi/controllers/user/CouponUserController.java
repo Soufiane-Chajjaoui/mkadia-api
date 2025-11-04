@@ -11,6 +11,7 @@ import fr.mkadia.mkadiaapi.services.coupon.CouponService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/api/v1/coupons")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('USER')")
 public class CouponUserController {
 
     private final CouponService couponService;
