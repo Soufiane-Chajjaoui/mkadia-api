@@ -59,8 +59,11 @@ public class JwtService implements IJwtService {
     @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-
+        User user =  (User) userDetails;
         List<RoleLabel> rolesExtracted = this.extractRoles(userDetails);
+        claims.put("id", user.getId());
+        claims.put("firstName", user.getFirstName());
+        claims.put("lastName", user.getLastName());
         claims.put("roles", rolesExtracted);
         return buildToken(claims, userDetails, this.jwtExpiration);
     }
