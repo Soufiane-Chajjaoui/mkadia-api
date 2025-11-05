@@ -64,6 +64,9 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Token> tokens;
 
+    @OneToMany(mappedBy = "user",  cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -90,6 +90,8 @@ public class ProductDTO {
     @NotNull(message = "La catégorie est obligatoire")
     private CategoryDTO category;
 
+    private List<ReviewDTO> reviews;
+
     // ✅ Images
     private List<MediaDTO> urls;
 

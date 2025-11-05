@@ -22,6 +22,7 @@ public class UserDTO {
     private String phone;
 
     private List<RoleDTO> roles;
+    private List<ReviewDTO> reviews;
     private List<TokenDTO> tokens;
     private List<OrderDTO> orders;
     private List<CartDTO> carts;

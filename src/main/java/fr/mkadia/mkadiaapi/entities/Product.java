@@ -102,6 +102,9 @@ public class Product {
             foreignKey = @ForeignKey(name = "fk_product_category"))
     private Category category;
 
+    @OneToMany(mappedBy = "product", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviews;
+
     // ✅ Liste des images du produit
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY,
             orphanRemoval = true, cascade = CascadeType.ALL)
