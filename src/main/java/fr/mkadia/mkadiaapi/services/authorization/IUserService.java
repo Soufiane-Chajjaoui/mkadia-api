@@ -11,4 +11,5 @@ import java.util.Set;
 public interface IUserService {
     Optional<ResponseOperation<UserDTO>> setRolesToUser(UserDTO userDTO, Set<RoleDTO> rolesDTO);
     Optional<User> getUserByEmail(String email);
+    public Optional<ResponseOperation<UserDTO>> getCurrentUser(User user);
 }

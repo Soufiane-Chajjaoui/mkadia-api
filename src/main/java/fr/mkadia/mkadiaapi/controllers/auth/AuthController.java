@@ -201,10 +201,4 @@ public class AuthController {
                         .build()
         );
     }
-    @GetMapping("/profile")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ResponseOperation<UserDTO>> getCurrentUser() {
-        return ResponseEntity.of(authService.getCurrentUser());
-    }
-
 }

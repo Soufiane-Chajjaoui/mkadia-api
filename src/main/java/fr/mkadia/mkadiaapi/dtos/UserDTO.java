@@ -27,6 +27,4 @@ public class UserDTO {
     private List<OrderDTO> orders;
     private List<CartDTO> carts;
     private List<AddressDTO> addresses;
-
-
 }

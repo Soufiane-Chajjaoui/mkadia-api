@@ -73,4 +73,19 @@ public class UserService implements IUserService{
         User user = userRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("This email not registered ou incorrect"));
         return Optional.of(user);
     }
+
+    @Override
+    public Optional<ResponseOperation<UserDTO>> getCurrentUser(User user) {
+        return
+                Optional.of(
+                        ResponseOperation.<UserDTO>builder()
+                                .message("Current User with essentials Credentials")
+                                .object(
+                                        UserDTO.builder()
+                                                .phone(user.getPhone())
+                                                .firstName(user.getFirstName())
+                                                .lastName(user.getLastName())
+                                                .build()
+                                ).build());
+    }
 }

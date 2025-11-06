@@ -168,23 +168,4 @@ public class AuthService implements IAuthService {
             throw new VerificationException("Code OTP Not Valid");
         }
     }
-
-    @Override
-    public Optional<ResponseOperation<UserDTO>> getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        User user = (User) authentication.getPrincipal();
-        return
-                Optional.of(
-                        ResponseOperation.<UserDTO>builder()
-                                .message("Current User with essentials Credentials")
-                                .object(
-                                        UserDTO.builder()
-                                                .email(user.getEmail())
-                                                .firstName(user.getFirstName())
-                                                .lastName(user.getLastName())
-                                                .build()
-                                ).build());
-    }
-
 }
