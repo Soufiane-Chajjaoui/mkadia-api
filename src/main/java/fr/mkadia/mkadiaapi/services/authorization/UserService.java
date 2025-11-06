@@ -8,6 +8,7 @@ import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.RoleMapper;
 import fr.mkadia.mkadiaapi.mappers.UserMapper;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
+import fr.mkadia.mkadiaapi.models.UpdateProfileRequest;
 import fr.mkadia.mkadiaapi.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,5 +88,21 @@ public class UserService implements IUserService{
                                                 .lastName(user.getLastName())
                                                 .build()
                                 ).build());
+    }
+
+    @Override
+    public ResponseOperation<?> updateProfile(UpdateProfileRequest request, User user) {
+
+        User userToUpdate = userRepository.findByEmail(user.getEmail())
+                .orElseThrow(()-> new EntityNotFoundException("User Not Found"));
+
+        userToUpdate.setLastName(request.getLastName());
+        userToUpdate.setFirstName(request.getFirstName());
+        userToUpdate.setPhone(request.getPhone());
+
+        userRepository.save(userToUpdate);
+        return ResponseOperation.builder()
+                .message("User has been updated")
+                .build();
     }
 }

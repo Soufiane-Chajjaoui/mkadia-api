@@ -3,6 +3,7 @@ package fr.mkadia.mkadiaapi.controllers.user;
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
+import fr.mkadia.mkadiaapi.models.UpdateProfileRequest;
 import fr.mkadia.mkadiaapi.services.authorization.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,5 +22,11 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<ResponseOperation<UserDTO>> getProfile(@AuthenticationPrincipal User user) {
         return ResponseEntity.of(userService.getCurrentUser(user));
+    }
+
+    @PatchMapping("/update-profile")
+    public ResponseEntity<ResponseOperation<?>> updateProfile(@AuthenticationPrincipal User user,
+                                                              @RequestBody UpdateProfileRequest request) {
+        return ResponseEntity.ok(userService.updateProfile(request, user));
     }
 }
