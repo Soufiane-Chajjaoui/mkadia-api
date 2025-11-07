@@ -1,6 +1,5 @@
 package fr.mkadia.mkadiaapi.dtos;
 
-import fr.mkadia.mkadiaapi.entities.OrderItem;
 import fr.mkadia.mkadiaapi.enums.OrderStatus;
 import fr.mkadia.mkadiaapi.enums.PaymentMethod;
 import fr.mkadia.mkadiaapi.enums.PaymentStatus;
@@ -11,9 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class AdminOrderDTO {
+public class ClientOrderDTO {
     private Integer id;
-    private UserBasicDTO client;
     private BigDecimal subTotal;
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;
@@ -24,7 +22,6 @@ public class AdminOrderDTO {
     private int countItems;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UserBasicDTO delivery;
     private AddressBasic address;
 
     @Data

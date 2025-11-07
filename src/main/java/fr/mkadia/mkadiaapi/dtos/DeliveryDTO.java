@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fr.mkadia.mkadiaapi.enums.DeliveryMode;
 import fr.mkadia.mkadiaapi.enums.DeliveryStatus;
 import lombok.AllArgsConstructor;

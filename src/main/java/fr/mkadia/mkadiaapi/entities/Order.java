@@ -48,17 +48,14 @@ public class Order {
     // orphanRemoval = true supprime les items quand ils ne sont plus dans la liste
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    @JsonManagedReference
     private List<OrderItem> items = new ArrayList<>();
 
     // 🔥 CORRECTION 2 : Garder orphanRemoval pour payment (1-to-1)
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private Payment payment;
 
     // 🔥 CORRECTION 3 : Garder orphanRemoval pour delivery (1-to-1)
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private Delivery delivery;
 
     @ManyToOne(fetch = FetchType.LAZY)
