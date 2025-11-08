@@ -1,8 +1,6 @@
 package fr.mkadia.mkadiaapi.controllers.user;
 
-import fr.mkadia.mkadiaapi.dtos.AddressDTO;
 import fr.mkadia.mkadiaapi.dtos.OrderDTO;
-import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.models.CheckoutRequest;
 import fr.mkadia.mkadiaapi.services.order.IOrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,9 +31,8 @@ public class CheckoutController {
             @ApiResponse(responseCode = "401", description = "Non authentifié")
     })
     public ResponseEntity<OrderDTO> createOrder(
-            @AuthenticationPrincipal User user,
             @RequestBody CheckoutRequest checkoutRequest) {
-        OrderDTO order = orderService.createOrder(user, checkoutRequest);
+        OrderDTO order = orderService.createOrder(checkoutRequest);
         return ResponseEntity.ok(order);
     }
 

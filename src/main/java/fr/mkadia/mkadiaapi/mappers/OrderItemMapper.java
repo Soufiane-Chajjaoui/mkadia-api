@@ -13,6 +13,7 @@ import java.util.List;
 public interface OrderItemMapper {
 
     @Mapping(target = "order", ignore = true)  // 🔥 NE PAS mapper Order dans OrderItemDTO
+    @Mapping(target = "product", source = "product")
     OrderItemDTO fromEntity(OrderItem orderItem);
     OrderItemSimpleDTO toOrderItemSimpleDTO(OrderItem orderItem);
     OrderItem fromDTO(OrderItemDTO orderItemDTO);

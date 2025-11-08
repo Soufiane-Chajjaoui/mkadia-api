@@ -1,5 +1,7 @@
 package fr.mkadia.mkadiaapi.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fr.mkadia.mkadiaapi.enums.PaymentMethod;
 import fr.mkadia.mkadiaapi.enums.PaymentStatus;
 import lombok.AllArgsConstructor;
