@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -256,7 +257,10 @@ public class OrderService implements IOrderService {
 
     @Override
     public ElementsOfPageDTO<ClientOrderDTO> getClientOrders(User user, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        Sort sortOrders = Sort.by(
+                Sort.Direction.DESC, "createdAt"
+        );
+        PageRequest pageRequest = PageRequest.of(page, size, sortOrders);
         Page<Order> orders = orderRepository.findAllByUser(user, pageRequest);
         return  ElementsOfPageDTO.<ClientOrderDTO>builder()
                 .elementsDTO(orders.stream()
@@ -267,5 +271,12 @@ public class OrderService implements IOrderService {
                 .totalRecords(orders.getTotalElements())
                 .totalPages(orders.getTotalPages())
                 .build();
+    }
+
+    @Override
+    public ClientOrderDTO getClientOrderDetails(Integer id) {
+        return orderMapper.toClientOrderDetails(orderRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException(String.format("Commande avec l'ID %d introuvable", id))
+        ));
     }
 }

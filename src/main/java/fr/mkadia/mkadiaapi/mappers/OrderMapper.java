@@ -27,9 +27,18 @@ public interface OrderMapper {
     @Mapping(target = "paymentStatus", source = "payment.status")
     @Mapping(target = "paymentMethod", source = "payment.method")
     @Mapping(target = "address", source = "delivery.address")
+    @Mapping(target = "delivery", source = "delivery.assignedTo", ignore = true)
     @Mapping(target = "items", source = "items", ignore = true)
     @Mapping(target = "countItems", expression = "java(order.getItems() != null ? order.getItems().size() : 0)")
     ClientOrderDTO toClientOrder(Order order);
+
+    @Mapping(target = "paymentStatus", source = "payment.status")
+    @Mapping(target = "paymentMethod", source = "payment.method")
+    @Mapping(target = "address", source = "delivery.address")
+    @Mapping(target = "delivery", source = "delivery.assignedTo")
+    @Mapping(target = "items", source = "items")
+    @Mapping(target = "countItems", expression = "java(order.getItems() != null ? order.getItems().size() : 0)")
+    ClientOrderDTO toClientOrderDetails(Order order);
 
     @Mapping(target = "delivery", source = "delivery.assignedTo")
     @Mapping(target = "client", source = "user")

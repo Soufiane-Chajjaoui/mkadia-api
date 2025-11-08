@@ -20,4 +20,5 @@ public interface IOrderService {
     OrderDTO updateOrderStatus(Integer orderId, OrderStatus orderStatus);
     ElementsOfPageDTO<AdminOrderDTO> getOrders(BigDecimal minAmount, BigDecimal maxAmount, String status, String paymentStatus, String paymentMethod, String client, LocalDate createAfter, LocalDate createBefore, Pageable pageable);
     ElementsOfPageDTO<ClientOrderDTO> getClientOrders(User user, int page, int size);
+    ClientOrderDTO getClientOrderDetails(Integer id);
 }

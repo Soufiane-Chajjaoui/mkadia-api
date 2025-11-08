@@ -1,6 +1,5 @@
 package fr.mkadia.mkadiaapi.controllers.user;
 
-import fr.mkadia.mkadiaapi.dtos.AdminOrderDTO;
 import fr.mkadia.mkadiaapi.dtos.ClientOrderDTO;
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
@@ -8,7 +7,6 @@ import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.models.UpdateProfileRequest;
 import fr.mkadia.mkadiaapi.services.authorization.IUserService;
-import fr.mkadia.mkadiaapi.services.authorization.UserService;
 import fr.mkadia.mkadiaapi.services.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +33,16 @@ public class UserController {
                                                               @RequestBody UpdateProfileRequest request) {
         return ResponseEntity.ok(userService.updateProfile(request, user));
     }
+
     @GetMapping("/orders")
     public ResponseEntity<ElementsOfPageDTO<ClientOrderDTO>> getOrders(@AuthenticationPrincipal User user,
                                                                        @RequestParam(required = false, defaultValue = "0") int page,
                                                                        @RequestParam(required = false, defaultValue = "10") int size) {
         return ResponseEntity.ok(orderService.getClientOrders(user, page, size));
+    }
+
+    @GetMapping("/order/{id}")
+    public ResponseEntity<ClientOrderDTO> getOrder(@PathVariable Integer id) {
+        return ResponseEntity.ok(orderService.getClientOrderDetails(id));
     }
 }

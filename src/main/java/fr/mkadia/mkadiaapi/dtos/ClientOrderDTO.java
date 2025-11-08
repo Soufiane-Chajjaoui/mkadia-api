@@ -19,6 +19,7 @@ public class ClientOrderDTO {
     private PaymentMethod paymentMethod;
     private OrderStatus status;
     private List<OrderItemSimpleDTO> items;
+    private UserBasicDTO delivery;
     private int countItems;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
