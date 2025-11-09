@@ -1,9 +1,11 @@
 package fr.mkadia.mkadiaapi.services.authorization;
 
+import fr.mkadia.mkadiaapi.dtos.DeliveryManDTO;
 import fr.mkadia.mkadiaapi.dtos.RoleDTO;
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.Role;
 import fr.mkadia.mkadiaapi.entities.User;
+import fr.mkadia.mkadiaapi.enums.RoleLabel;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.RoleMapper;
 import fr.mkadia.mkadiaapi.mappers.UserMapper;
@@ -104,5 +106,20 @@ public class UserService implements IUserService{
         return ResponseOperation.builder()
                 .message("User has been updated")
                 .build();
+    }
+
+    @Override
+    public List<DeliveryManDTO> getDeliveries() {
+        return userRepository.findAllByRoleLabel(
+                        RoleLabel.DELIVERY
+        )
+                .stream()
+                .map(userMapper::toDeliveryMan)
+                .toList();
+    }
+
+    @Override
+    public User getUserById(Integer id){
+        return userRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("User Not Found"));
     }
 }
