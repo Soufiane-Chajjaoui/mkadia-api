@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.mappers;
 
+import fr.mkadia.mkadiaapi.dtos.DeliveryManDTO;
 import fr.mkadia.mkadiaapi.dtos.UserBasicDTO;
 import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.User;
@@ -15,5 +16,6 @@ public interface UserMapper {
     @Mapping(target = "addresses", ignore = true)
     @Mapping(target = "reviews", ignore = true)
     UserDTO fromEntity(User user);
+    DeliveryManDTO toDeliveryMan(User user);
     User fromDTO(UserDTO userDTO);
 }

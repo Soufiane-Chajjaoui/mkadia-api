@@ -1,8 +1,10 @@
 package fr.mkadia.mkadiaapi.controllers.admin;
 
 import fr.mkadia.mkadiaapi.dtos.AdminOrderDTO;
+import fr.mkadia.mkadiaapi.dtos.DeliveryManDTO;
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.OrderDTO;
+import fr.mkadia.mkadiaapi.models.DeliveryManAssignedRequest;
 import fr.mkadia.mkadiaapi.services.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -49,5 +51,11 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<AdminOrderDTO> getOrderDetails(@PathVariable Integer id) {
         return ResponseEntity.of(orderService.getOrderDetails(id));
+    }
+
+    @PatchMapping("/{id}/delivery-assigned")
+    public ResponseEntity<AdminOrderDTO> setDeliveryAssigned(@PathVariable Integer id, @RequestBody DeliveryManDTO request) {
+        orderService.setDeliveryAssigned(id, request);
+        return ResponseEntity.ok().build();
     }
 }

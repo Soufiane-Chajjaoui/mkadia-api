@@ -8,7 +8,10 @@ import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.exceptions.StockInsuffisantException;
 import fr.mkadia.mkadiaapi.mappers.OrderMapper;
 import fr.mkadia.mkadiaapi.models.CheckoutRequest;
+import fr.mkadia.mkadiaapi.models.ResponseMessage;
+import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.*;
+import fr.mkadia.mkadiaapi.services.authorization.UserService;
 import fr.mkadia.mkadiaapi.services.coupon.CouponService;
 import fr.mkadia.mkadiaapi.specifications.OrderSpecification;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -40,6 +44,7 @@ public class OrderService implements IOrderService {
     private final AddressRepository addressRepository;
     private final OrderMapper orderMapper;
     private final CouponService couponService;
+    private final UserService userService;
 
     @Transactional
     @Override
@@ -278,5 +283,18 @@ public class OrderService implements IOrderService {
         return orderMapper.toClientOrderDetails(orderRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException(String.format("Commande avec l'ID %d introuvable", id))
         ));
+    }
+
+    @Override
+    public ResponseMessage setDeliveryAssigned(Integer orderId, DeliveryManDTO request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException(STR."Order with ID \{orderId} introuvable"));
+        User deliveryMan = userService.getUserById(request.getId());
+        Delivery delivery = order.getDelivery();
+        delivery.setAssignedTo(deliveryMan);
+        orderRepository.save(order);
+        return ResponseMessage.builder()
+                .message("Delivery man has been assigned")
+                .build();
     }
 }

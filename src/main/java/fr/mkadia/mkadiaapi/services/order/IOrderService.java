@@ -1,16 +1,16 @@
 package fr.mkadia.mkadiaapi.services.order;
 
-import fr.mkadia.mkadiaapi.dtos.AdminOrderDTO;
-import fr.mkadia.mkadiaapi.dtos.ClientOrderDTO;
-import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
-import fr.mkadia.mkadiaapi.dtos.OrderDTO;
+import fr.mkadia.mkadiaapi.dtos.*;
 import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.enums.OrderStatus;
 import fr.mkadia.mkadiaapi.models.CheckoutRequest;
+import fr.mkadia.mkadiaapi.models.ResponseMessage;
+import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 public interface IOrderService {
@@ -21,4 +21,5 @@ public interface IOrderService {
     ElementsOfPageDTO<AdminOrderDTO> getOrders(BigDecimal minAmount, BigDecimal maxAmount, String status, String paymentStatus, String paymentMethod, String client, LocalDate createAfter, LocalDate createBefore, Pageable pageable);
     ElementsOfPageDTO<ClientOrderDTO> getClientOrders(User user, int page, int size);
     ClientOrderDTO getClientOrderDetails(Integer id);
+    ResponseMessage setDeliveryAssigned(Integer orderId, DeliveryManDTO request);
 }
