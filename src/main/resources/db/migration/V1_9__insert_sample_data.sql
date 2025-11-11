@@ -2,49 +2,56 @@
 
 -- Insert categories
 INSERT INTO categories (name, url) VALUES
-('Electronics', 'electronics'),
-('Clothing', 'clothing'),
-('Home & Kitchen', 'home-kitchen'),
-('Beauty & Personal Care', 'beauty-personal-care'),
-('Food & Beverages', 'food-beverages');
+('Fruits & Légumes', 'fruits-legumes'),
+('Viandes & Poissons', 'viandes-poissons'),
+('Produits Laitiers & Œufs', 'produits-laitiers-oeufs'),
+('Pain, Céréales & Pâtisseries', 'pain-cereales-patisseries'),
+('Boissons', 'boissons'),
+('Épicerie Salée', 'epicerie-salee'),
+('Snacks & Sucreries', 'snacks-sucreries'),
+('Produits Surgelés', 'produits-surgeles'),
+('Produits pour Bébé', 'produits-bebe'),
+('Hygiène & Entretien', 'hygiene-entretien');
 
--- Insert products
--- Produits pour Fruits (Catégorie 1)
-INSERT INTO products (name, description, price, stock, category_id, sku, barcode, brand, origin, discount_percentage, status, is_featured, is_new, unit, quantity, expiration_date, slug, meta_title, meta_desc) VALUES
-('Pommes Golden', 'Pommes sucrées et croquantes, origine France', 2.99, 150, 1, 'FRUIT-POM-GOLD', '200000000001', 'Ferme du Val', 'France', NULL, 'ACTIVE', false, false, 'KG', 1.0, '2025-09-30', 'pommes-golden', 'Pommes Golden - Fraîches et croquantes', 'Dégustez nos pommes Golden directement de nos vergers français'),
-('Bananes Bio', 'Bananes équitables certifiées agriculture biologique', 3.49, 200, 1, 'FRUIT-BAN-BIO', '200000000002', 'BioTrop', 'Côte d''Ivoire', 10.0, 'ACTIVE', true, false, 'KG', 1.0, '2025-08-20', 'bananes-bio', 'Bananes Bio - Équitable et durable', 'Bananes cultivées sans pesticides pour votre santé'),
-('Fraises Gariguette', 'Fraises parfumées de saison, cueillies à maturité', 5.99, 80, 1, 'FRUIT-FRA-GARI', '200000000003', 'BerryFresh', 'Espagne', NULL, 'ACTIVE', false, true, 'KG', 0.5, '2025-08-15', 'fraises-gariguette', 'Fraises Gariguette - Le goût de l''été', 'Fraises juteuses avec leur parfum caractéristique'),
-('Mangues Kent', 'Mangues crémeuses et sucrées, sans fibres', 4.25, 60, 1, 'FRUIT-MAN-KENT', '200000000004', 'TropicalFruit', 'Brésil', 15.0, 'ACTIVE', true, true, 'PCS', 1.0, '2025-09-10', 'mangues-kent', 'Mangues Kent - Douceur exotique', 'La variété de mangue la plus appréciée pour sa chair tendre'),
-('Raisin Blanc', 'Raisin blanc sans pépin, grappes généreuses', 3.75, 90, 1, 'FRUIT-RAI-BLANC', '200000000005', 'VignobleSud', 'France', NULL, 'ACTIVE', false, false, 'KG', 1.0, '2025-08-25', 'raisin-blanc', 'Raisin blanc sans pépin - Frais et sucré', 'Idéal pour le snacking ou vos recettes'),
--- Produits pour Electronics (Catégorie 2)
-('Smartphone X10 Pro', 'Écran 6.7" AMOLED, triple caméra 108MP', 999.99, 30, 2, 'ELEC-PH-X10P', '300000000001', 'TechPlus', 'Chine', NULL, 'ACTIVE', true, true, 'PCS', 1.0, NULL, 'smartphone-x10-pro', 'Smartphone X10 Pro - Performance ultime', 'Le flagship avec processeur dernier cri et autonomie record'),
-('Casque Bluetooth NC', 'Réduction de bruit active, autonomie 30h', 179.99, 45, 2, 'ELEC-HS-NC50', '300000000002', 'SoundPro', 'Vietnam', 20.0, 'ACTIVE', true, false, 'PCS', 1.0, NULL, 'casque-bluetooth-nc', 'Casque sans fil avec réduction de bruit', 'Profitez de votre musique sans perturbations extérieures'),
-('Tablette 10" 128GB', 'Tablette Android avec stylet inclus', 349.99, 25, 2, 'ELEC-TB-10A', '300000000003', 'TabTech', 'Corée du Sud', 15.0, 'ACTIVE', false, false, 'PCS', 1.0, NULL, 'tablette-10-128gb', 'Tablette polyvalente 10 pouces', 'Idéale pour le travail et les loisirs'),
-('Montre Connectée', 'Suivi santé 24/7, étanche 5ATM', 129.99, 60, 2, 'ELEC-WS-SMART', '300000000004', 'WearTech', 'Taiwan', NULL, 'ACTIVE', false, true, 'PCS', 1.0, NULL, 'montre-connectee', 'Montre intelligente complète', 'Mesurez vos activités et votre sommeil avec précision'),
-('Enceinte Portable', 'Son 360°, résistante à l''eau IPX7', 89.99, 40, 2, 'ELEC-SP-BT05', '300000000005', 'AudioMove', 'Chine', 10.0, 'ACTIVE', false, false, 'PCS', 1.0, NULL, 'enceinte-portable', 'Enceinte Bluetooth nomade', 'Emportez votre musique partout avec vous'),
--- Produits pour Clothing (Catégorie 3)
-('Jeans Slim Noir', 'Jean slim stretch confortable, coupe moderne', 59.99, 100, 3, 'CLOTH-JN-SLIM', '400000000001', 'DenimCo', 'Bangladesh', 30.0, 'ACTIVE', true, false, 'PCS', 1.0, NULL, 'jeans-slim-noir', 'Jeans Slim Noir - Élégance urbaine', 'Le basique intemporel pour votre garde-robe'),
-('T-Shirt Col V', '100% coton bio, coupe ajustée', 24.99, 150, 3, 'CLOTH-TS-VNECK', '400000000002', 'CottonPure', 'Portugal', NULL, 'ACTIVE', false, true, 'PCS', 1.0, NULL, 't-shirt-col-v', 'T-Shirt bio confortable', 'Respirable et doux contre la peau'),
-('Veste en Cuir', 'Cuir véritable, doublure en soie', 299.99, 15, 3, 'CLOTH-JK-LEAT', '400000000003', 'LeatherLux', 'Italie', NULL, 'ACTIVE', true, true, 'PCS', 1.0, NULL, 'veste-en-cuir', 'Veste en cuir premium - Fabriquée en Italie', 'Pièce maîtresse intemporelle de qualité artisanale'),
-('Robe d''Été', 'Imprimé floral, tissu léger et fluide', 45.99, 60, 3, 'CLOTH-DR-SUMM', '400000000004', 'SunnyStyle', 'Maroc', 15.0, 'ACTIVE', false, false, 'PCS', 1.0, NULL, 'robe-ete', 'Robe d''été légère et confortable', 'Parfaite pour les journées ensoleillées'),
-('Chaussures de Sport', 'Confort optimal, semelle amortissante', 79.99, 80, 3, 'CLOTH-SH-SPORT', '400000000005', 'StepRight', 'Vietnam', 25.0, 'ACTIVE', true, false, 'PCS', 1.0, NULL, 'chaussures-sport', 'Chaussures de sport performantes', 'Support et confort pour vos entraînements'),
+-- Supposons que les catégories ont déjà été insérées avec leurs IDs 1..10
+-- Ici, on crée 50 produits actifs répartis sur 5 catégories
 
--- Produits pour Home & Kitchen (Catégorie 4)
-('Machine à Café', 'Broyeur intégré, 15 bars de pression', 249.99, 20, 4, 'HOME-CF-ESPR', '500000000001', 'BrewMaster', 'Allemagne', NULL, 'ACTIVE', true, false, 'PCS', 1.0, NULL, 'machine-cafe', 'Machine à café professionnelle', 'Savourez un café barista chez vous'),
-('Set de Casseroles', '6 pièces en acier inoxydable 18/10', 129.99, 35, 4, 'HOME-PN-SET6', '500000000002', 'CookPro', 'France', 20.0, 'ACTIVE', false, true, 'PACK', 1.0, NULL, 'set-casseroles', 'Set de cuisine complet', 'Qualité professionnelle pour vos préparations'),
-('Robot Mixeur', '1000W, 5 vitesses, fonction pulse', 89.99, 40, 4, 'HOME-BL-PRO', '500000000003', 'BlendTech', 'Chine', 15.0, 'ACTIVE', false, false, 'PCS', 1.0, NULL, 'robot-mixeur', 'Robot mixeur multifonction', 'Préparations variées en quelques secondes'),
-('Serviettes de Bain', '100% coton égyptien, 600g/m²', 29.99, 100, 4, 'HOME-TW-SET4', '500000000004', 'CottonLux', 'Egypte', NULL, 'ACTIVE', false, false, 'PACK', 4.0, NULL, 'serviettes-bain', 'Serviettes de bain haut de gamme', 'Doux et absorbant pour un confort optimal'),
-('Wok Antiadhésif', 'Diamètre 34cm, revêtement céramique', 49.99, 30, 4, 'HOME-WK-CERA', '500000000005', 'WokMaster', 'Thaïlande', 10.0, 'ACTIVE', true, true, 'PCS', 1.0, NULL, 'wok-antiadhesif', 'Wok professionnel antiadhésif', 'Cuisson saine et uniforme'),
+INSERT INTO products
+(name, description, sku, barcode, brand, origin, price, discount_percentage, stock,
+ status, is_new, is_featured, unit, quantity, expiration_date,
+ slug, meta_title, meta_desc, category_id, created_at, updated_at)
+VALUES
+-- 🥦 Fruits & Légumes (cat_id = 1)
+('Pommes Golden', 'Pommes croquantes du Maroc', 'FRU-POM-GOLD', '111111111111', 'AgriMaroc', 'Maroc', 2.99, NULL, 120, 'ACTIVE', true, false, 'KG', 1.0, '2025-09-01', 'pommes-golden', 'Pommes Golden Maroc', 'Pommes fraîches et sucrées', 1, NOW(), NOW()),
+('Bananes', 'Bananes douces d’Amérique Latine', 'FRU-BAN-001', '111111111112', 'TropiFresh', 'Équateur', 3.49, 5.0, 200, 'ACTIVE', true, true, 'KG', 1.0, '2025-09-01', 'bananes', 'Bananes fraîches', 'Riches en potassium et énergie', 1, NOW(), NOW()),
+('Fraises Gariguette', 'Fraises parfumées d’Espagne', 'FRU-FRA-GARI', '111111111113', 'BerryFresh', 'Espagne', 5.99, NULL, 80, 'ACTIVE', false, true, 'KG', 0.5, '2025-07-01', 'fraises-gariguette', 'Fraises Gariguette', 'Saveur sucrée et intense', 1, NOW(), NOW()),
+('Raisin Blanc', 'Sans pépins, idéal pour dessert', 'FRU-RAI-BLC', '111111111114', 'VignobleSud', 'France', 3.75, NULL, 95, 'ACTIVE', false, false, 'KG', 1.0, '2025-08-15', 'raisin-blanc', 'Raisin blanc', 'Frais et sucré', 1, NOW(), NOW()),
+('Avocats Hass', 'Avocats crémeux importés du Kenya', 'FRU-AVO-HAS', '111111111115', 'TropiFresh', 'Kenya', 4.99, 10.0, 75, 'ACTIVE', false, true, 'PCS', 2.0, '2025-10-01', 'avocats-hass', 'Avocats Hass', 'Texture onctueuse pour salades', 1, NOW(), NOW()),
 
--- Produits pour Beauty & Personal Care (Catégorie 5)
-('Crème Visage Bio', 'Hydratation intense, certifiée Ecocert', 34.99, 80, 5, 'BEAU-CR-BIO', '600000000001', 'BioCare', 'France', NULL, 'ACTIVE', true, false, 'PCS', 1.0, '2026-06-30', 'creme-visage-bio', 'Crème hydratante bio', 'Soin naturel pour une peau nourrie et protégée'),
-('Shampoing Réparateur', 'Aux kératines et huile d''argan', 14.99, 120, 5, 'BEAU-SH-REPA', '600000000002', 'HairLux', 'Espagne', 15.0, 'ACTIVE', false, true, 'PCS', 1.0, '2026-03-31', 'shampoing-reparateur', 'Shampoing réparateur intensif', 'Redonne force et brillance à vos cheveux'),
-('Parfum Signature', 'Eau de parfum 100ml, notes boisées', 79.99, 25, 5, 'BEAU-PF-SIGN', '600000000003', 'ScentMaster', 'France', NULL, 'ACTIVE', true, true, 'PCS', 1.0, '2027-12-31', 'parfum-signature', 'Parfum signature élégant', 'Un parfum unique qui vous caractérise'),
-('Masque Argile', 'Purifiant et matifiant, peau grasse', 12.99, 90, 5, 'BEAU-MS-ARG', '600000000004', 'ClayPure', 'Italie', 20.0, 'ACTIVE', false, false, 'PCS', 1.0, '2025-12-31', 'masque-argile', 'Masque à l''argile purifiant', 'Élimine les impuretés et resserre les pores'),
-('Brosse à Dents Éco', 'Bambou naturel, poils en nylon recyclé', 4.99, 200, 5, 'BEAU-BD-ECO', '600000000005', 'EcoSmile', 'Allemagne', NULL, 'ACTIVE', false, false, 'PCS', 1.0, NULL, 'brosse-dents-eco', 'Brosse à dents écologique', 'Alternative durable pour votre hygiène buccale'),
+-- 🍗 Viandes & Poissons (cat_id = 2)
+('Poulet Fermier', 'Poulet frais origine locale', 'MEA-POU-FER', '222222222221', 'BeldiFarm', 'Maroc', 45.00, NULL, 60, 'ACTIVE', true, true, 'KG', 1.0, '2025-08-10', 'poulet-fermier', 'Poulet Fermier', 'Poulet tendre et savoureux', 2, NOW(), NOW()),
+('Saumon Frais', 'Filet de saumon d’Écosse', 'FIS-SAU-FIL', '222222222222', 'NordSea', 'Écosse', 89.99, 15.0, 45, 'ACTIVE', false, false, 'KG', 0.5, '2025-08-20', 'saumon-frais', 'Saumon frais', 'Riche en oméga 3', 2, NOW(), NOW()),
+('Steak de Bœuf', 'Viande rouge premium', 'MEA-STK-BEF', '222222222223', 'AtlasMeat', 'Maroc', 120.00, NULL, 30, 'ACTIVE', true, false, 'KG', 1.0, '2025-08-05', 'steak-boeuf', 'Steak Bœuf Premium', 'Viande tendre de qualité', 2, NOW(), NOW()),
+('Crevettes Roses', 'Crevettes décortiquées', 'FIS-CRV-ROS', '222222222224', 'OceanMar', 'Maroc', 99.90, 5.0, 90, 'ACTIVE', false, true, 'KG', 1.0, '2025-09-30', 'crevettes-roses', 'Crevettes Roses', 'Prêtes à cuire', 2, NOW(), NOW()),
+('Merguez Fraîches', 'Saucisses de bœuf épicées', 'MEA-MER-FRA', '222222222225', 'HalalDelight', 'Maroc', 55.00, NULL, 110, 'ACTIVE', true, false, 'KG', 1.0, '2025-08-12', 'merguez-fraiches', 'Merguez Fraîches', 'Recette artisanale', 2, NOW(), NOW()),
 
--- Produits pour Food & Beverages (Catégorie 6)
-('Café Grain Arabica', '100% Arabica, torréfaction moyenne', 8.99, 50, 5, 'FOOD-CF-ARAB', '700000000001', 'CoffeeMasters', 'Colombie', 10.0, 'ACTIVE', true, false, 'PACK', 0.5, '2026-01-31', 'cafe-arabica', 'Café grain Arabica premium', 'Arômes complexes et équilibrés pour les connaisseurs'),
-('Miel de Lavande', 'Miel cru non pasteurisé, origine Provence', 12.99, 40, 5, 'FOOD-MI-LAV', '700000000003', 'MielFrance', 'France', NULL, 'ACTIVE', false, false, 'G', 500.0, '2026-06-30', 'miel-lavande', 'Miel de lavande artisanal', 'Saveurs florales et propriétés apaisantes'),
-('Pâtes Artisanales', 'Semoule de blé dur, séchage lent', 5.99, 80, 5, 'FOOD-PA-ART', '700000000004', 'PastaMamma', 'Italie', 15.0, 'ACTIVE', false, true, 'PACK', 0.5, '2026-03-31', 'pates-artisanales', 'Pâtes artisanales italiennes', 'Texture ferme et goût authentique'),
-('Huile d''Olive Vierge', 'Extra vierge, première pression à froid', 18.99, 60, 5, 'FOOD-OO-EVOO', '700000000005', 'OlioPuro', 'Grèce', NULL, 'ACTIVE', true, false, 'L', 0.75, '2026-01-31', 'huile-olive-extra', 'Huile d''olive extra vierge premium', 'Fruitée et légèrement poivrée, idéale pour vos plats');
+-- 🥛 Produits Laitiers & Œufs (cat_id = 3)
+('Lait Demi-Écrémé', 'Lait stérilisé UHT 1L', 'DAI-LAI-UHT', '333333333331', 'Central Laitière', 'Maroc', 8.50, NULL, 200, 'ACTIVE', true, false, 'L', 1.0, '2025-11-01', 'lait-uht', 'Lait Demi-Écrémé', 'Source naturelle de calcium', 3, NOW(), NOW()),
+('Yaourt Nature', 'Yaourt nature sans sucre', 'DAI-YAO-NAT', '333333333332', 'Danone', 'Maroc', 4.00, 5.0, 300, 'ACTIVE', false, false, 'PCS', 1.0, '2025-09-15', 'yaourt-nature', 'Yaourt Nature', 'Crémeux et léger', 3, NOW(), NOW()),
+('Fromage Gouda', 'Fromage hollandais doux', 'DAI-FRO-GOU', '333333333333', 'HollandCheese', 'Pays-Bas', 39.90, 10.0, 80, 'ACTIVE', true, true, 'KG', 0.5, '2025-09-30', 'fromage-gouda', 'Fromage Gouda', 'Saveur douce et fondante', 3, NOW(), NOW()),
+('Beurre Doux', 'Beurre pur lait de vache', 'DAI-BEU-DOU', '333333333334', 'Président', 'France', 25.00, NULL, 150, 'ACTIVE', false, false, 'PCS', 1.0, '2025-10-15', 'beurre-doux', 'Beurre Doux', 'Idéal pour tartines et pâtisseries', 3, NOW(), NOW()),
+('Œufs Plein Air', 'Boîte de 6 œufs fermiers', 'DAI-OEU-PLA', '333333333335', 'FermeAtlas', 'Maroc', 12.00, NULL, 400, 'ACTIVE', false, true, 'PACK', 6.0, '2025-07-30', 'oeufs-plein-air', 'Œufs Plein Air', 'Œufs frais de poules élevées en plein air', 3, NOW(), NOW()),
+
+-- 🥖 Pain, Céréales & Pâtisseries (cat_id = 4)
+('Pain Complet', 'Pain complet artisanal', 'BAK-PAN-COM', '444444444441', 'Boulangerie Atlas', 'Maroc', 5.00, NULL, 150, 'ACTIVE', true, false, 'PCS', 1.0, '2025-06-01', 'pain-complet', 'Pain complet', 'Source de fibres naturelles', 4, NOW(), NOW()),
+('Croissants au Beurre', 'Pur beurre croustillant', 'BAK-CRO-BEU', '444444444442', 'Boulangerie Atlas', 'Maroc', 9.00, 10.0, 100, 'ACTIVE', true, true, 'PACK', 4.0, '2025-06-15', 'croissants-beurre', 'Croissants au Beurre', 'Recette française authentique', 4, NOW(), NOW()),
+('Céréales Miel & Avoine', 'Céréales riches en fibres', 'BAK-CER-MAV', '444444444443', 'NutriFit', 'Espagne', 25.00, 15.0, 80, 'ACTIVE', false, false, 'PACK', 0.5, '2026-02-01', 'cereales-miel-avoine', 'Céréales Miel et Avoine', 'Petit déjeuner nutritif', 4, NOW(), NOW()),
+('Pain de Mie', 'Pain tranché moelleux', 'BAK-PAN-MIE', '444444444444', 'Boulangerie Atlas', 'Maroc', 7.50, NULL, 120, 'ACTIVE', false, false, 'PACK', 0.5, '2025-09-01', 'pain-de-mie', 'Pain de Mie', 'Idéal pour sandwichs', 4, NOW(), NOW()),
+('Gâteaux au Chocolat', 'Gâteaux moelleux tout chocolat', 'BAK-GAT-CHO', '444444444445', 'SweetDelight', 'Maroc', 20.00, 10.0, 60, 'ACTIVE', false, true, 'PACK', 0.4, '2025-10-01', 'gateaux-chocolat', 'Gâteaux au Chocolat', 'Délicieux et fondants', 4, NOW(), NOW()),
+
+-- 🧴 Hygiène & Entretien (cat_id = 10)
+('Savon Liquide', 'Savon liquide main aloe vera', 'HYG-SAV-LIQ', '555555555551', 'CleanTouch', 'France', 15.00, NULL, 120, 'ACTIVE', false, false, 'PCS', 0.5, '2026-05-01', 'savon-liquide', 'Savon Liquide Aloe Vera', 'Nettoie et hydrate les mains', 10, NOW(), NOW()),
+('Dentifrice Fraîcheur', 'Goût menthe, protection complète', 'HYG-DEN-FRA', '555555555552', 'SmilePro', 'Maroc', 12.00, 5.0, 140, 'ACTIVE', false, true, 'PCS', 0.1, '2026-07-01', 'dentifrice-fraicheur', 'Dentifrice Fraîcheur Menthe', 'Pour une haleine fraîche', 10, NOW(), NOW()),
+('Lessive Liquide', 'Formule concentrée 3L', 'HYG-LES-LIQ', '555555555553', 'AquaClean', 'France', 49.90, 20.0, 70, 'ACTIVE', true, false, 'L', 3.0, '2027-01-01', 'lessive-liquide', 'Lessive Liquide Concentrée', 'Propreté impeccable et parfum frais', 10, NOW(), NOW()),
+('Essuie-Tout', 'Rouleaux absorbants, pack de 6', 'HYG-ESS-TOU', '555555555554', 'SoftCare', 'Italie', 25.00, NULL, 90, 'ACTIVE', false, true, 'PACK', 6.0, '2026-03-01', 'essuie-tout', 'Essuie-Tout absorbant', 'Résistant et pratique', 10, NOW(), NOW()),
+('Gel Douche', 'Gel douche hydratant coco', 'HYG-GEL-COC', '555555555555', 'BodyFresh', 'Maroc', 22.00, 10.0, 100, 'ACTIVE', true, true, 'PCS', 0.4, '2026-02-01', 'gel-douche', 'Gel Douche Coco', 'Hydratation et douceur tropicale', 10, NOW(), NOW());

@@ -185,7 +185,7 @@ public class ProductService implements IProductService{
         productToUpdate.setName(productDTO.getName());
         productToUpdate.setDescription(productDTO.getDescription());
         productToUpdate.setPrice(productDTO.getPrice());
-
+        productToUpdate.setExpirationDate(productDTO.getExpirationDate());
         Category newCategory = categoryRepository.findById(productDTO.getCategory().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Category Not Found"));
         productToUpdate.setCategory(newCategory);
