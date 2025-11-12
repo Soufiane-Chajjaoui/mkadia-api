@@ -60,11 +60,9 @@ public class AuthController {
         return ResponseEntity.of(tokenService.refreshToken(request, response));
     }
 
-    @PostMapping(value = "/forgot-password",
-    consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/forgot-password")
     public ResponseEntity<ResponseOperation<String>> processForgetPassword(
-            @ModelAttribute PasswordRequest passwordRequest,
+            @RequestBody PasswordRequest passwordRequest,
             HttpServletRequest request) throws UnknownHostException, MessagingException {
 
         mailService.sendResetPasswordEmail(passwordRequest.getEmail(), request);
@@ -96,7 +94,7 @@ public class AuthController {
 
             // ✅ Vérifier le token
             UserDTO user = tokenService.tokenVerify(token);
-            log.info("✅ Token valide pour l'utilisateur: {}", user.getEmail());
+            log.info("Token valide pour l'utilisateur: {}", user.getEmail());
 
             // ✅ Générer la page HTML avec Thymeleaf
             String htmlContent = generateMobileResetRedirectPage(token, user, request);
@@ -161,7 +159,7 @@ public class AuthController {
         context.setVariable("androidStoreUrl", "https://play.google.com/store/apps/details?id=com.mkadia.app");
         context.setVariable("iosStoreUrl", "https://apps.apple.com/app/mkadia/id123456789");
 
-        log.info("🎨 Génération page redirection mobile pour: {} - Nom: '{} {}'",
+        log.info("Génération page redirection mobile pour: {} - Nom: '{} {}'",
                 user.getEmail(), firstName, lastName);
 
         return templateEngine.process("mobile/reset-password-redirect", context);
@@ -185,12 +183,10 @@ public class AuthController {
     }
 
 
-    @PatchMapping(value = "/change-reset-password",
-    consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE ,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/change-reset-password")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ResponseOperation<String>> changeResetPassword(
-            @ModelAttribute PasswordRequest resetPassword
+            @RequestBody PasswordRequest resetPassword
     ){
 
         authService.changeResetPassword(resetPassword);

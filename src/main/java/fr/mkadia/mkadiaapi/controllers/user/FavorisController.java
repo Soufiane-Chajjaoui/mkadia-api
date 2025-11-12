@@ -21,8 +21,7 @@ public class FavorisController {
             @AuthenticationPrincipal User user,
             @PathVariable Integer productId
     ){
-        favoriteService.addToFavorites(user, productId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(favoriteService.addToFavorites(user, productId));
     }
     @DeleteMapping("/{favoriteId}")
     public ResponseEntity<?> removeFromFavorites(
