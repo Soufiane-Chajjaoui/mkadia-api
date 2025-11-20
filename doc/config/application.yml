@@ -4,6 +4,18 @@ server:
   servlet:
     context-path: /mkadia-api
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+    consumer:
+      group-id: mkadia-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -119,3 +131,9 @@ minio:
     bucket:
       name: mkadia-objects
     put-object-part-size: 5242880 #value in bytes (minimum is 5 MB equivalent)
+
+kafka:
+  topics:
+    - favorite
+    - cart
+    - review
