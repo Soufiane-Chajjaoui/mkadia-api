@@ -2,19 +2,25 @@ package fr.mkadia.mkadiaapi.services.review;
 
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ReviewDTO;
+import fr.mkadia.mkadiaapi.dtos.ReviewEvent;
 import fr.mkadia.mkadiaapi.entities.Product;
 import fr.mkadia.mkadiaapi.entities.Review;
 import fr.mkadia.mkadiaapi.entities.User;
+import fr.mkadia.mkadiaapi.enums.InteractionTopic;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.ReviewMapper;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.repositories.ProductRepository;
 import fr.mkadia.mkadiaapi.repositories.ReviewRepository;
+import fr.mkadia.mkadiaapi.services.stream.InteractionProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +28,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
     private final ProductRepository productRepository;
+    private final InteractionProducer interactionProducer;
+
     public ElementsOfPageDTO<ReviewDTO> getReviews(int productId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Review> reviews = reviewRepository.findByProductIdOrderByCreatedAtDesc(productId, pageRequest);
@@ -45,7 +53,14 @@ public class ReviewService {
 
         review.setProduct(product);
         review.setUser(user);
-
+        ReviewEvent reviewEvent = ReviewEvent.builder()
+                .userId(user.getId())
+                .comment(review.getComment())
+                .itemId(product.getId())
+                .timestamp(Instant.now().toEpochMilli())
+                .rating(reviewDTO.getRating())
+                .build();
+        interactionProducer.send(InteractionTopic.REVIEW, reviewEvent);
         Review reviewSaved = reviewRepository.save(review);
         return reviewMapper.fromEntity(reviewSaved);
     }

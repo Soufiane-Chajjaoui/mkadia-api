@@ -131,9 +131,3 @@ minio:
     bucket:
       name: mkadia-objects
     put-object-part-size: 5242880 #value in bytes (minimum is 5 MB equivalent)
-
-kafka:
-  topics:
-    - favorite
-    - cart
-    - review
