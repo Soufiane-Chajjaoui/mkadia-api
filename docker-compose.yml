@@ -65,6 +65,7 @@ services:
 volumes:
   mkadia-api-postgres-data:
   mkadia-api-minio-data:
+  redis_data:
 
 networks:
   mkadia-api-net:

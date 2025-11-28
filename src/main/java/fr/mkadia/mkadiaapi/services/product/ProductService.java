@@ -16,7 +16,9 @@ import fr.mkadia.mkadiaapi.repositories.CategoryRepository;
 import fr.mkadia.mkadiaapi.repositories.MediaRepository;
 import fr.mkadia.mkadiaapi.repositories.ProductRepository;
 import fr.mkadia.mkadiaapi.services.file.MinioStorageService;
+import fr.mkadia.mkadiaapi.services.redis.ProductCacheService;
 import fr.mkadia.mkadiaapi.specifications.ProductSpecification;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,7 +46,44 @@ public class ProductService implements IProductService{
     private final MediaRepository mediaRepository;
     private final CategoryRepository categoryRepository;
     private final MinioStorageService minioStorageService;
+    private final ProductCacheService productCacheService;
 
+    @PostConstruct
+    public void initLogger() {
+        log.info("ProductService logger initialized");
+    }
+
+//    @Override
+//    public Optional<ElementsOfPageDTO<ProductDTO>> getProducts(
+//            String search,
+//            Integer categoryId,
+//            BigDecimal minPrice,
+//            BigDecimal maxPrice,
+//            String status,
+//            String stockStatus,
+//            LocalDate createdAfter,
+//            LocalDate createdBefore,
+//            Pageable pageable
+//    ) {
+//        Specification<Product> spec = ProductSpecification.filterProducts(
+//                search, categoryId, minPrice, maxPrice, status, stockStatus,
+//                createdAfter, createdBefore
+//        );
+//
+//        Page<Product> products = productRepository.findAll(spec, pageable);
+//
+//        List<ProductDTO> productDTOs = products.stream().map(productMapper::fromEntity).toList();
+//
+//        ElementsOfPageDTO<ProductDTO> productsPage =
+//                ElementsOfPageDTO.<ProductDTO>builder()
+//                        .totalPages(products.getTotalPages())
+//                        .pageSize(products.getSize())
+//                        .totalRecords(products.getTotalElements())
+//                        .currentPage(pageable.getPageNumber())
+//                        .elementsDTO(productDTOs)
+//                        .build();
+//        return Optional.of(productsPage);
+//    }
 
     @Override
     public Optional<ElementsOfPageDTO<ProductDTO>> getProducts(
@@ -58,23 +97,42 @@ public class ProductService implements IProductService{
             LocalDate createdBefore,
             Pageable pageable
     ) {
+        // 1️⃣ Generate cache key
+        int page = pageable.getPageNumber();
+        int size = pageable.getPageSize();
+
+        // 2️⃣ Try cache
+        var cached = productCacheService.getCachedProductsPage(page, size);
+        if (cached.isPresent()) {
+            log.info("Products page {} found in cache, {} products",
+                    pageable.getPageNumber(), cached.get().getElementsDTO().size());
+            return cached;
+        }
+
+        // 3️⃣ Fetch from DB
         Specification<Product> spec = ProductSpecification.filterProducts(
                 search, categoryId, minPrice, maxPrice, status, stockStatus,
                 createdAfter, createdBefore
         );
 
         Page<Product> products = productRepository.findAll(spec, pageable);
+        List<ProductDTO> productDTOs = products.stream()
+                .map(productMapper::fromEntity)
+                .toList();
 
-        List<ProductDTO> productDTOs = products.stream().map(productMapper::fromEntity).toList();
+        ElementsOfPageDTO<ProductDTO> productsPage = ElementsOfPageDTO.<ProductDTO>builder()
+                .totalPages(products.getTotalPages())
+                .pageSize(products.getSize())
+                .totalRecords(products.getTotalElements())
+                .currentPage(page)
+                .elementsDTO(productDTOs)
+                .build();
 
-        ElementsOfPageDTO<ProductDTO> productsPage =
-                ElementsOfPageDTO.<ProductDTO>builder()
-                        .totalPages(products.getTotalPages())
-                        .pageSize(products.getSize())
-                        .totalRecords(products.getTotalElements())
-                        .currentPage(pageable.getPageNumber())
-                        .elementsDTO(productDTOs)
-                        .build();
+        // 4️⃣ Cache result
+        productCacheService.cacheProductsPage(page, size, productsPage);
+
+        log.info("Fetched products page {} from DB", page);
+
         return Optional.of(productsPage);
     }
 
@@ -140,16 +198,45 @@ public class ProductService implements IProductService{
                         .build());
     }
 
+//    @Override
+//    public Optional<ProductDTO> getProduct(Integer id) {
+//
+//        Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
+//
+//        product.setUrls(mediaRepository.findAllByProduct(product));
+//        return Optional.of(
+//                productMapper.fromEntity(product)
+//        );
+//    }
+
     @Override
     public Optional<ProductDTO> getProduct(Integer id) {
+        // 1️⃣ Try to get from cache
+        var cached = productCacheService.getCachedProduct(id);
+        if (cached.isPresent()) {
+            log.info("Product {} found in cache", id);
+            return cached;
+        }
 
-        Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
+        // 2️⃣ Fetch from database
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
 
+        // 3️⃣ Load associated media
         product.setUrls(mediaRepository.findAllByProduct(product));
-        return Optional.of(
-                productMapper.fromEntity(product)
-        );
+
+        // 4️⃣ Map to DTO
+        ProductDTO dto = productMapper.fromEntity(product);
+
+        // 5️⃣ Cache the result
+        productCacheService.cacheProduct(id, dto);
+
+        log.info("Fetching product {} from DB", id);
+
+
+        return Optional.of(dto);
     }
+
 
     @Override
     public Optional<ResponseMessage> deleteProduct(Integer id) {
