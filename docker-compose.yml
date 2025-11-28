@@ -60,7 +60,7 @@ services:
       - REDIS_PASSWORD=admin
     command: [ "redis-server", "--requirepass", "admin" ]
     networks:
-      - global-net
+      - mkadia-api-net
 
 volumes:
   mkadia-api-postgres-data:
