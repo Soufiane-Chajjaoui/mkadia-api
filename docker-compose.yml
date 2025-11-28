@@ -49,6 +49,19 @@ services:
     networks:
       - mkadia-api-net
 
+  redis-json:
+    image: redis/redis-stack:latest
+    container_name: redis-json
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=admin
+    command: [ "redis-server", "--requirepass", "admin" ]
+    networks:
+      - global-net
+
 volumes:
   mkadia-api-postgres-data:
   mkadia-api-minio-data:
