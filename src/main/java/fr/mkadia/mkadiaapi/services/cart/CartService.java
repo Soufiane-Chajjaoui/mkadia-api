@@ -1,7 +1,9 @@
 package fr.mkadia.mkadiaapi.services.cart;
 
 import fr.mkadia.mkadiaapi.dtos.CartDTO;
+import fr.mkadia.mkadiaapi.dtos.CartEvent;
 import fr.mkadia.mkadiaapi.entities.*;
+import fr.mkadia.mkadiaapi.enums.InteractionTopic;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.mappers.CartMapper;
 import fr.mkadia.mkadiaapi.models.CartItemRequest;
@@ -9,11 +11,13 @@ import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.repositories.CartItemRepository;
 import fr.mkadia.mkadiaapi.repositories.CartRepository;
 import fr.mkadia.mkadiaapi.repositories.ProductRepository;
+import fr.mkadia.mkadiaapi.services.stream.InteractionProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -26,6 +30,7 @@ public class CartService {
     private final ProductRepository productRepository;
     private final CartMapper cartMapper;
     private final CartItemRepository cartItemRepository;
+    private final InteractionProducer interactionProducer;
 
     public CartDTO getCart(User user) {
         return cartMapper.fromEntity(cartRepository.findByUser(user)
@@ -56,6 +61,12 @@ public class CartService {
             cart.getItems().add(item);
             this.cartItemRepository.save(item);
         }
+        CartEvent cartEvent = CartEvent.builder()
+                .userId(user.getId())
+                .productId(product.getId())
+                .timestamp(Instant.now().toEpochMilli())
+                .build();
+        interactionProducer.send(InteractionTopic.CART, cartEvent);
         return Optional.of(
                 ResponseMessage.builder()
                         .message("Item Has been Registered")

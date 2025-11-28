@@ -1,25 +1,9 @@
+version: '3.9'
+name: mkadia-platform
 services:
-#  mkadia-api:
-#    build: .
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./doc/config:/config
-#    environment:
-#      - SPRING_CONFIG_LOCATION=file:/config/application.yml
-#    depends_on:
-#      - postgres
-#      - minio
-#  mkadia-web-client:
-#    image: mkadia-web-client:latest
-#    build:
-#      context: ../mkadia-web-client
-#      dockerfile: Dockerfile
-#    ports:
-#      - "4000:4000"
-#    restart: always
   postgres:
     image: 'postgres:latest'
+    container_name: mkadia-api-postgres
     environment:
       - 'POSTGRES_DB=mkadia-db'
       - 'POSTGRES_PASSWORD=soufianch'
@@ -27,7 +11,9 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - mkadia-api-postgres-data:/var/lib/postgresql/data
+    networks:
+      - mkadia-api-net
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -36,25 +22,37 @@ services:
 
   pgadmin:
     image: 'dpage/pgadmin4:latest'
+    container_name: mkadia-api-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@gmail.com
       PGADMIN_DEFAULT_PASSWORD: soufianch
       PGADMIN_LISTEN_PORT: 5050
     ports:
       - '5050:5050'
+    networks:
+      - mkadia-api-net
+
   minio:
     image: minio/minio:latest
+    container_name: mkadia-api-minio
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
       MINIO_DEFAULT_BUCKETS: mkadia-objects
     ports:
-      - '9000:9000'  # API port
-      - '9001:9001'  # Console port
+      - '9000:9000'
+      - '9001:9001'
     volumes:
-      - minio-data:/data  # Volume pour persister les données
-    command: server /data --console-address ":9001" # Commande pour démarrer le serveur MinIO
+      - mkadia-api-minio-data:/data
+    command: server /data --console-address ":9001"
     restart: always
+    networks:
+      - mkadia-api-net
+
 volumes:
-  postgres-data:
-  minio-data:
+  mkadia-api-postgres-data:
+  mkadia-api-minio-data:
+
+networks:
+  mkadia-api-net:
+    name: mkadia-api-net

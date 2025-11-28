@@ -3,6 +3,7 @@ package fr.mkadia.mkadiaapi.services.order;
 import fr.mkadia.mkadiaapi.dtos.*;
 import fr.mkadia.mkadiaapi.entities.*;
 import fr.mkadia.mkadiaapi.enums.DeliveryStatus;
+import fr.mkadia.mkadiaapi.enums.InteractionTopic;
 import fr.mkadia.mkadiaapi.enums.OrderStatus;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
 import fr.mkadia.mkadiaapi.exceptions.StockInsuffisantException;
@@ -13,6 +14,7 @@ import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.repositories.*;
 import fr.mkadia.mkadiaapi.services.authorization.UserService;
 import fr.mkadia.mkadiaapi.services.coupon.CouponService;
+import fr.mkadia.mkadiaapi.services.stream.InteractionProducer;
 import fr.mkadia.mkadiaapi.specifications.OrderSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,12 +48,16 @@ public class OrderService implements IOrderService {
     private final OrderMapper orderMapper;
     private final CouponService couponService;
     private final UserService userService;
+    private final InteractionProducer interactionProducer;
 
     @Transactional
     @Override
     public OrderDTO createOrder(CheckoutRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
+        List<Integer> itemsIds = request.getItems()
+                .stream().map(i-> i.getProduct().getId())
+                .toList();
         log.info("📦 Creating order for user: {} ({})", user.getId(), user.getEmail());
 
         // Créer la commande
@@ -192,7 +199,13 @@ public class OrderService implements IOrderService {
         // Sauvegarder avec paiement et livraison
         order = orderRepository.save(order);
         log.info("🎉 Order {} created successfully!", order.getId());
-
+        interactionProducer.send(InteractionTopic.ORDER,
+                OrderEvent.builder()
+                        .userId(user.getId())
+                        .productIds(itemsIds)
+                        .timestamp(Instant.now().toEpochMilli())
+                        .build()
+        );
         return orderMapper.fromEntity(order);
     }
     @Override
