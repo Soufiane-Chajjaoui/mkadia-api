@@ -40,4 +40,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
             @Param("categoryId") Integer categoryId,
             Pageable pageable
     );
+
+    @Query(
+            value = """
+    SELECT pr.*
+    FROM product_related_products rp
+    JOIN products pr ON pr.product_id = rp.related_id
+    WHERE rp.product_id = :productId
+    """,
+            nativeQuery = true
+    )
+    List<Product> findRelatedProductsNative(@Param("productId") Integer productId);
+
 }

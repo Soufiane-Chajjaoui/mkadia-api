@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.services.product;
 
+import fr.mkadia.mkadiaapi.dtos.CartItemProductDTO;
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductCardDTO;
@@ -44,4 +45,6 @@ public interface IProductService {
                                                           List<String> existingUrls);
 
     Optional<?> getProductsByCategory(String status, int page, int size, int stock, Integer categoryId);
+
+    List<CartItemProductDTO> getRelatedProduct(Integer mainProduct);
 }

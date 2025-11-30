@@ -1,5 +1,6 @@
 package fr.mkadia.mkadiaapi.services.product;
 
+import fr.mkadia.mkadiaapi.dtos.CartItemProductDTO;
 import fr.mkadia.mkadiaapi.dtos.ElementsOfPageDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductDTO;
 import fr.mkadia.mkadiaapi.dtos.ProductCardDTO;
@@ -8,7 +9,6 @@ import fr.mkadia.mkadiaapi.entities.Media;
 import fr.mkadia.mkadiaapi.entities.Product;
 import fr.mkadia.mkadiaapi.enums.MediaType;
 import fr.mkadia.mkadiaapi.exceptions.EntityNotFoundException;
-import fr.mkadia.mkadiaapi.mappers.CategoryMapper;
 import fr.mkadia.mkadiaapi.mappers.ProductMapper;
 import fr.mkadia.mkadiaapi.models.ResponseMessage;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
@@ -35,7 +35,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -365,6 +364,14 @@ public class ProductService implements IProductService{
                         .elementsDTO(getSetOfProductsWithFirstMedia(productsOfPage))
                         .build();
         return Optional.of(productsPage);
+    }
+
+
+    @Override
+    public List<CartItemProductDTO> getRelatedProduct(Integer mainProduct){
+
+        List<Product> products = productRepository.findRelatedProductsNative(mainProduct);
+        return products.stream().map(productMapper::fromEntityToCartItemProductDTO).toList();
     }
 
 
