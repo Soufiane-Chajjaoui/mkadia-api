@@ -110,6 +110,14 @@ public class Product {
             orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Media> urls = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "product_related_products",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "related_id")
+    )
+    private List<Product> relatedProducts;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -45,4 +45,9 @@ public class PublicController {
     public ResponseEntity<ProductDTO> getProduct(@PathVariable(name = "id")int id){
         return ResponseEntity.of(productService.getProduct(id));
     }
+
+    @GetMapping("/product/{id}/related")
+    public ResponseEntity<?> getRelatedToProduct(@PathVariable(name = "id")int id){
+        return ResponseEntity.ok(productService.getRelatedProduct(id));
+    }
 }

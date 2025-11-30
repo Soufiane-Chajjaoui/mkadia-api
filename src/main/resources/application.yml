@@ -1,6 +1,6 @@
 spring:
   config:
-    import: file:/media/soufian-ch/P2/projects/mkadia-app/mkadia-api/doc/config/application.yml
+    import: file:C:/Users/SAMSUNG/Documents/GitHub/mkadia-api/doc/config/application.yml
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
