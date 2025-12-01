@@ -5,7 +5,7 @@ server:
     context-path: /mkadia-api
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
@@ -30,6 +30,7 @@ spring:
     check-template-location: true
   docker:
     compose:
+      file: docker-compose.api.yml
       lifecycle-management: start_and_stop
   servlet:
     multipart:
