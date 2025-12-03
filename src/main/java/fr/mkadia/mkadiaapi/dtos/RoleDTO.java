@@ -9,7 +9,7 @@ import java.util.Set;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor @Builder
 public class RoleDTO {
-    private Integer id;
+    private Long id;
     private RoleLabel label;
     private Boolean isDefault;
     private Set<UserDTO> users;

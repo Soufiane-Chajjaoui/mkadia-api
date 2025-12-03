@@ -57,7 +57,7 @@ services:
         sleep 5 &&
         mc alias set mk http://minio:9000 minioadmin minioadmin &&
         mc mb mk/mkadia-media || true &&
-        mc mb mk/mkadia-data || true &&
+        mc mb mk/mkadia-lakehouse || true &&
         tail -f /dev/null
       "
     networks:

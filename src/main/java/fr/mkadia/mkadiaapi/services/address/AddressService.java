@@ -55,7 +55,7 @@ public class AddressService {
      * Définit une adresse comme adresse par défaut
      */
     @Transactional
-    public AddressDTO setDefaultAddress(Integer id, User user) {
+    public AddressDTO setDefaultAddress(Long id, User user) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Adresse non trouvée"));
 
@@ -78,7 +78,7 @@ public class AddressService {
      * Supprime une adresse
      */
     @Transactional
-    public void deleteAddress(Integer id, User user) {
+    public void deleteAddress(Long id, User user) {
         Address address = addressRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Adresse non trouvée"));
 

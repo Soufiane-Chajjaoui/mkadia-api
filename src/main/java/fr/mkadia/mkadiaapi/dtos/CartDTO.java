@@ -8,7 +8,7 @@ import java.util.Set;
 @Data
 public class CartDTO {
 
-    private Integer id;
+    private Long id;
     private Set<CartItemDTO> items;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -33,7 +33,7 @@ public class CategoryService implements ICategoryService{
     private final CategoryMapper categoryMapper;
     private final MinioStorageService minioStorageService;
     @Override
-    public Optional<CategoryDTO> getCategory(Integer id) {
+    public Optional<CategoryDTO> getCategory(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException(STR."Category \{id} Not Found")
         );
@@ -89,7 +89,7 @@ public class CategoryService implements ICategoryService{
     }
 
     @Override
-    public Optional<ResponseMessage> deleteCategory(Integer id) {
+    public Optional<ResponseMessage> deleteCategory(Long id) {
 
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(STR."Category with id \{id} not found")

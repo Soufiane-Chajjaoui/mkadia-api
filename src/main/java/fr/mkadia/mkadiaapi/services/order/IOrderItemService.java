@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface IOrderItemService {
     public OrderItemDTO addOrderItem(OrderDTO order, ProductDTO product, int quantity);
-    public void removeOrderItem(Integer itemId);
-    public List<OrderItemDTO> getItemsByOrder(Integer orderId);
+    public void removeOrderItem(Long itemId);
+    public List<OrderItemDTO> getItemsByOrder(Long orderId);
 }

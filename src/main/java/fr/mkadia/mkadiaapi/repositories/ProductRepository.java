@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     Page<Product> findByNameContainingIgnoreCase(String keyword , Pageable pageable);
 
 //    // stick with native SQL and cast
@@ -37,7 +37,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer>, JpaS
     Page<Product> findAvailableProductsByCategory(
             @Param("status") String status,
             @Param("minStock") int minStock,
-            @Param("categoryId") Integer categoryId,
+            @Param("categoryId") Long categoryId,
             Pageable pageable
     );
 }

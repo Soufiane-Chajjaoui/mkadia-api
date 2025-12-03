@@ -42,7 +42,7 @@ public class AddressController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAddress(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @AuthenticationPrincipal User user
     ) {
         addressService.deleteAddress(id, user);
@@ -54,7 +54,7 @@ public class AddressController {
      */
     @PutMapping("/{id}/default")
     public ResponseEntity<AddressDTO> setDefaultAddress(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @AuthenticationPrincipal User user
     ) {
         AddressDTO address = addressService.setDefaultAddress(id, user);

@@ -33,12 +33,12 @@ public class OrderItemService implements IOrderItemService {
     }
 
     @Override
-    public void removeOrderItem(Integer itemId) {
+    public void removeOrderItem(Long itemId) {
         orderItemRepository.deleteById(itemId);
     }
 
     @Override
-    public List<OrderItemDTO> getItemsByOrder(Integer orderId) {
+    public List<OrderItemDTO> getItemsByOrder(Long orderId) {
 
         return orderItemMapper.fromEntities(
                 orderItemRepository.findAllByOrder(

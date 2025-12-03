@@ -33,7 +33,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<ElementsOfPageDTO<ProductDTO>> getProducts(
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) String status,
@@ -67,7 +67,7 @@ public class ProductController {
         return ResponseEntity.of(productService.saveProduct(productDTO , files));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable Integer id){
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id){
         return ResponseEntity.of(productService.getProduct(id));
     }
     @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -80,7 +80,7 @@ public class ProductController {
         return ResponseEntity.of(productService.updateProduct(productDTO, files, existingUrls));
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer id){
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         return ResponseEntity.of(productService.deleteProduct(id));
     }
 }

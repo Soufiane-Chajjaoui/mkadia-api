@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 public class AdminOrderDTO {
-    private Integer id;
+    private Long id;
     private UserBasicDTO client;
     private BigDecimal subTotal;
     private BigDecimal totalAmount;

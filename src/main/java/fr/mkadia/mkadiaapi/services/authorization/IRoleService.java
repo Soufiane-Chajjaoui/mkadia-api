@@ -10,10 +10,10 @@ import java.util.Set;
 public interface IRoleService {
     Optional<ResponseOperation<RoleDTO>> editRole(RoleDTO roleDTO);
     Optional<ResponseOperation<RoleDTO>> addRole(RoleDTO roleDTO);
-    Optional<RoleDTO> getRole(Integer idRole);
+    Optional<RoleDTO> getRole(Long idRole);
 
     Optional<List<RoleDTO>> getDefaultRoles();
-    Optional<ResponseOperation<Boolean>> deleteRole(Integer idRole);
+    Optional<ResponseOperation<Boolean>> deleteRole(Long idRole);
 
-    Optional<List<RoleDTO>> getRolesByIDs(List<Integer> IDs);
+    Optional<List<RoleDTO>> getRolesByIDs(List<Long> IDs);
 }

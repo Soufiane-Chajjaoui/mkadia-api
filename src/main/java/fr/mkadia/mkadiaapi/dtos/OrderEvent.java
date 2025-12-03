@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderEvent {
-    private Integer userId;
-    private List<Integer> productIds;
+    private Long userId;
+    private List<Long> productIds;
     private Long timestamp;
 }

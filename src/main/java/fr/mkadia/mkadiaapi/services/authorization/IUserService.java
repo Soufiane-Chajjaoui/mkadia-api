@@ -6,7 +6,6 @@ import fr.mkadia.mkadiaapi.dtos.UserDTO;
 import fr.mkadia.mkadiaapi.entities.User;
 import fr.mkadia.mkadiaapi.models.ResponseOperation;
 import fr.mkadia.mkadiaapi.models.UpdateProfileRequest;
-import org.springframework.http.ProblemDetail;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,5 +17,5 @@ public interface IUserService {
     public Optional<ResponseOperation<UserDTO>> getCurrentUser(User user);
     ResponseOperation<?> updateProfile(UpdateProfileRequest request, User user);
     List<DeliveryManDTO> getDeliveries();
-    User getUserById(Integer id);
+    User getUserById(Long id);
 }

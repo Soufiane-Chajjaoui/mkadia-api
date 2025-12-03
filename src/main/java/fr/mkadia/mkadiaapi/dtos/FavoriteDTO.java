@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoriteDTO {
-    private Integer id;
+    private Long id;
 //    private User user;
     private ProductSimpleDTO product;
     private LocalDateTime createdAt;

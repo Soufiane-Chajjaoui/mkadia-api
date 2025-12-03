@@ -39,7 +39,7 @@ public class CouponService {
     /**
      * Récupère un coupon par ID
      */
-    public Optional<CouponDTO> getCouponById(Integer id) {
+    public Optional<CouponDTO> getCouponById(Long id) {
         return Optional.of(
                 couponMapper.fromEntity(
                         couponRepository.findById(id)

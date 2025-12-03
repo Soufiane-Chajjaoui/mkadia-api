@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CartItemDTO {
 
-    private Integer id;
+    private Long id;
     private CartItemProductDTO product;
     private int quantity;
     private LocalDateTime  createdAt;

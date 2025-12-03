@@ -1,8 +1,8 @@
 CREATE TABLE orders
 (
-    order_id     INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id      INT NOT NULL,
-    coupon_id    INT ,
+    order_id     BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id      BIGINT NOT NULL,
+    coupon_id    BIGINT ,
     sub_total NUMERIC(10, 2) NOT NULL CHECK (sub_total >= 0),
     total_amount NUMERIC(10, 2) NOT NULL CHECK (total_amount >= 0),
     discount_amount NUMERIC(10, 2) NOT NULL CHECK (discount_amount >= 0),

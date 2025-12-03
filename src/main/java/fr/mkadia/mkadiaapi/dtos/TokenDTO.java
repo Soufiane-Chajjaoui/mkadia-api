@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data @AllArgsConstructor @NoArgsConstructor @Builder
 public class TokenDTO  {
-    Integer id;
+    Long id;
     String token;
     boolean revoked;
     boolean expired;

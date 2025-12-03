@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class CartItemProductDTO {
-    private Integer id;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;

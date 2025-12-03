@@ -20,7 +20,7 @@ import java.util.List;
 public class ProductDTO {
 
     // ✅ Identifiant (null pour création)
-    private Integer id;
+    private Long id;
 
     // ✅ Infos de base
     @NotBlank(message = "Le nom est obligatoire")

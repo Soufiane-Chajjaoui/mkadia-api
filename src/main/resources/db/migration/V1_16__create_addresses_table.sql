@@ -1,7 +1,7 @@
 CREATE TABLE addresses
 (
-    address_id    INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id       INT          NOT NULL,
+    address_id    BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id       BIGINT NOT NULL,
     address_line1 VARCHAR(255) NOT NULL,
     address_line2 VARCHAR(255),
     city          VARCHAR(255) NOT NULL,

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoriteEvent {
-    private Integer userId;
-    private Integer productId;
+    private Long userId;
+    private Long productId;
     private Long timestamp;
 }

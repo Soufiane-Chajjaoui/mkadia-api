@@ -49,12 +49,12 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdminOrderDTO> getOrderDetails(@PathVariable Integer id) {
+    public ResponseEntity<AdminOrderDTO> getOrderDetails(@PathVariable Long id) {
         return ResponseEntity.of(orderService.getOrderDetails(id));
     }
 
     @PatchMapping("/{id}/delivery-assigned")
-    public ResponseEntity<AdminOrderDTO> setDeliveryAssigned(@PathVariable Integer id, @RequestBody DeliveryManDTO request) {
+    public ResponseEntity<AdminOrderDTO> setDeliveryAssigned(@PathVariable Long id, @RequestBody DeliveryManDTO request) {
         orderService.setDeliveryAssigned(id, request);
         return ResponseEntity.ok().build();
     }

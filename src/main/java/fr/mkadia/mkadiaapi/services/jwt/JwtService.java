@@ -86,7 +86,7 @@ public class JwtService implements IJwtService {
     public List<RoleLabel> extractRoles(UserDetails userDetails) {
         Optional<List<Role>> roles = Optional.of(
                 Optional.ofNullable(((User) userDetails).getRoles())
-                        .orElse(List.of(Role.builder().id(1).build()))
+                        .orElse(List.of(Role.builder().id(1L).build()))
         );
 
         return roles.get().stream()

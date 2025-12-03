@@ -1,11 +1,11 @@
 CREATE TABLE deliveries
 (
-    delivery_id      INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    order_id         INT         NOT NULL,
+    delivery_id      BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    order_id         BIGINT         NOT NULL,
     delivery_status  VARCHAR(50) NOT NULL,
-    delivery_address INT         NOT NULL,
+    delivery_address BIGINT         NOT NULL,
     delivery_mode VARCHAR(50) NOT NULL,
-    assigned_to       INT,
+    assigned_to       BIGINT,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

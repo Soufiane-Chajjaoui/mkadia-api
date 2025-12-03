@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewDTO {
-    private Integer id;
+    private Long id;
     private UserReview user;
-    private Integer productId;
+    private Long productId;
     private String comment;
     private int rating;
     private LocalDateTime createdAt;
@@ -25,7 +25,7 @@ public class ReviewDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UserReview {
-        private Integer id;
+        private Long id;
         private String firstName;
         private String lastName;
     }

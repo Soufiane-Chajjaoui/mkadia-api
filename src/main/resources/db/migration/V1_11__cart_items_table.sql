@@ -1,8 +1,8 @@
 CREATE TABLE cart_items
 (
-    cart_item_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    cart_id      INT NOT NULL,
-    product_id   INT NULL,
+    cart_item_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    cart_id      BIGINT NOT NULL,
+    product_id   BIGINT NULL,
     quantity     INT NOT NULL CHECK (quantity > 0),
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

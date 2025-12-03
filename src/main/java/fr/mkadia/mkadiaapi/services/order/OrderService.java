@@ -55,7 +55,7 @@ public class OrderService implements IOrderService {
     public OrderDTO createOrder(CheckoutRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        List<Integer> itemsIds = request.getItems()
+        List<Long> itemsIds = request.getItems()
                 .stream().map(i-> i.getProduct().getId())
                 .toList();
         log.info("📦 Creating order for user: {} ({})", user.getId(), user.getEmail());
@@ -209,7 +209,7 @@ public class OrderService implements IOrderService {
         return orderMapper.fromEntity(order);
     }
     @Override
-    public Optional<AdminOrderDTO> getOrderDetails(Integer orderId) {
+    public Optional<AdminOrderDTO> getOrderDetails(Long orderId) {
         log.info("Fetching order with ID: {}", orderId);
 
         Order order = orderRepository.findById(orderId)
@@ -221,7 +221,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderDTO getOrder(Integer orderId) {
+    public OrderDTO getOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format("Commande avec l'ID %d introuvable", orderId)
@@ -231,7 +231,7 @@ public class OrderService implements IOrderService {
 
     @Transactional
     @Override
-    public OrderDTO updateOrderStatus(Integer orderId, OrderStatus orderStatus) {
+    public OrderDTO updateOrderStatus(Long orderId, OrderStatus orderStatus) {
         log.info("Updating order {} status to {}", orderId, orderStatus);
 
         Order order = orderRepository.findById(orderId)
@@ -292,14 +292,14 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public ClientOrderDTO getClientOrderDetails(Integer id) {
+    public ClientOrderDTO getClientOrderDetails(Long id) {
         return orderMapper.toClientOrderDetails(orderRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException(String.format("Commande avec l'ID %d introuvable", id))
         ));
     }
 
     @Override
-    public ResponseMessage setDeliveryAssigned(Integer orderId, DeliveryManDTO request) {
+    public ResponseMessage setDeliveryAssigned(Long orderId, DeliveryManDTO request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(STR."Order with ID \{orderId} introuvable"));
         User deliveryMan = userService.getUserById(request.getId());

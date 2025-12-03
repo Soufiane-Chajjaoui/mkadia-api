@@ -1,5 +1,5 @@
 CREATE TABLE media (
-    media_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    media_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     media_type type_of_media,
     url TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -7,7 +7,7 @@ CREATE TABLE media (
 );
 
 ALTER TABLE media
-ADD product_id INT NOT NULL;
+ADD product_id BIGINT NOT NULL;
 
 ALTER TABLE media
 ADD CONSTRAINT fk_media_product

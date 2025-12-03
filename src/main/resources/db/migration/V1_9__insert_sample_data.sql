@@ -1,5 +1,4 @@
--- Insert sample data for categories and products
-
+-- -- Insert sample data for categories and products
 -- Insert categories
 INSERT INTO categories (name, url) VALUES
 ('Fruits & Légumes', 'fruits-legumes'),

@@ -32,7 +32,7 @@ public class FavoriteService {
     private final FavoriteMapper favoriteMapper;
     private final ProductRepository productRepository;
     private final InteractionProducer interactionProducer;
-    public FavoriteDTO addToFavorites(User user, Integer productId) {
+    public FavoriteDTO addToFavorites(User user, Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(()-> new EntityNotFoundException("Product not found"));
 
@@ -50,7 +50,7 @@ public class FavoriteService {
         return favoriteMapper.fromEntity(favoriteRepository.save(favorite));
     }
 
-    public void deleteFromFavorites(Integer favoriteId) {
+    public void deleteFromFavorites(Long favoriteId) {
         favoriteRepository.findById(favoriteId).orElseThrow(()-> new EntityNotFoundException("Favorite not found"));
         favoriteRepository.deleteById(favoriteId);
     }

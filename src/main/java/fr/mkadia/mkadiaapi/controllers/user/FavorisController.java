@@ -19,13 +19,13 @@ public class FavorisController {
     @PostMapping("/{productId}")
     public ResponseEntity<?> addToFavorites(
             @AuthenticationPrincipal User user,
-            @PathVariable Integer productId
+            @PathVariable Long productId
     ){
         return ResponseEntity.ok(favoriteService.addToFavorites(user, productId));
     }
     @DeleteMapping("/{favoriteId}")
     public ResponseEntity<?> removeFromFavorites(
-            @PathVariable Integer favoriteId
+            @PathVariable Long favoriteId
     ) {
         favoriteService.deleteFromFavorites(favoriteId);
         return ResponseEntity.ok().build();

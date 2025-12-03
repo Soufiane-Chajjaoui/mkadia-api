@@ -1,6 +1,6 @@
 CREATE TABLE coupons
 (
-    coupon_id           INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    coupon_id           BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     code_coupon         VARCHAR(50) NOT NULL UNIQUE,
     discount_type       VARCHAR(50) NOT NULL,
     discount_value      NUMERIC(10, 2) NULL,

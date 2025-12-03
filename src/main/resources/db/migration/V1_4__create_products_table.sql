@@ -1,11 +1,11 @@
 CREATE TABLE products
 (
-    product_id          INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    product_id          BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name                VARCHAR(255)     NOT NULL,
     description         TEXT             NOT NULL,
     price               NUMERIC(10, 2)   NOT NULL,
     stock               INT              NOT NULL,
-    category_id         INT              NOT NULL,
+    category_id         BIGINT              NOT NULL,
     sku                 VARCHAR(100)     NOT NULL UNIQUE,          -- ✅ SKU unique
     barcode             VARCHAR(100) UNIQUE,                       -- ✅ Barcode unique optionnel
     brand               VARCHAR(100),
