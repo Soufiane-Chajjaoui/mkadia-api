@@ -30,7 +30,7 @@ public class ReviewService {
     private final ProductRepository productRepository;
     private final InteractionProducer interactionProducer;
 
-    public ElementsOfPageDTO<ReviewDTO> getReviews(int productId, int page, int size) {
+    public ElementsOfPageDTO<ReviewDTO> getReviews(Long productId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Review> reviews = reviewRepository.findByProductIdOrderByCreatedAtDesc(productId, pageRequest);
         ElementsOfPageDTO<ReviewDTO> reviewsDTO = ElementsOfPageDTO.<ReviewDTO>
@@ -65,7 +65,7 @@ public class ReviewService {
         return reviewMapper.fromEntity(reviewSaved);
     }
 
-    public ResponseMessage deleteReview(Integer reviewId) {
+    public ResponseMessage deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
         return ResponseMessage.builder()
                 .message("Review has been deleted")

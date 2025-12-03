@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class MediaDTO {
-    private Integer id;
+    private Long id;
     private String url;
     private MediaType type;
     private Product products;

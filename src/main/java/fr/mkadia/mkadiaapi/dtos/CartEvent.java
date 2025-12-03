@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartEvent {
-    private Integer userId;
-    private Integer productId;
+    private Long userId;
+    private Long productId;
     private Long timestamp;
 }

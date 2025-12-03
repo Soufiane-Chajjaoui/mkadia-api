@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewEvent {
-    private Integer userId;
-    private Integer itemId;
+    private Long userId;
+    private Long itemId;
     private String comment;
     private int rating;
     private Long timestamp;

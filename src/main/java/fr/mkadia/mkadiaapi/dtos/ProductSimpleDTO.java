@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 public class ProductSimpleDTO {
-    private Integer id;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;

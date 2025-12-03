@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 public class ClientOrderDTO {
-    private Integer id;
+    private Long id;
     private BigDecimal subTotal;
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;

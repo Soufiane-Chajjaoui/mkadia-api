@@ -49,7 +49,7 @@ public class ProductService implements IProductService{
     @Override
     public Optional<ElementsOfPageDTO<ProductDTO>> getProducts(
             String search,
-            Integer categoryId,
+            Long categoryId,
             BigDecimal minPrice,
             BigDecimal maxPrice,
             String status,
@@ -141,7 +141,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Optional<ProductDTO> getProduct(Integer id) {
+    public Optional<ProductDTO> getProduct(Long id) {
 
         Product product = productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
 
@@ -152,7 +152,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Optional<ResponseMessage> deleteProduct(Integer id) {
+    public Optional<ResponseMessage> deleteProduct(Long id) {
         ProductDTO product = getProduct(id).get();
         List<Media> mediaList = mediaRepository.findAllByProduct(productMapper.fromDTO(product));
         productRepository.deleteById(id);
@@ -263,7 +263,7 @@ public class ProductService implements IProductService{
     }
 
     @Override
-    public Optional<ElementsOfPageDTO<ProductCardDTO>> getProductsByCategory(String status, int page, int size, int stock, Integer categoryId) {
+    public Optional<ElementsOfPageDTO<ProductCardDTO>> getProductsByCategory(String status, int page, int size, int stock, Long categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new EntityNotFoundException("Category not found"));
 
         Page<Product> productsOfPage = productRepository.findAvailableProductsByCategory(status, stock, category.getId(), PageRequest.of(page, size));

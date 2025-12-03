@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressDTO {
-    private Integer id;
+    private Long id;
     private String addressLine1;
     private String addressLine2;
     private String city;

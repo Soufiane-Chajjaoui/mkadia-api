@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CheckoutItemDTO {
-    private Integer id;
+    private Long id;
     private ProductSimpleDTO product;
     private int quantity;
 }

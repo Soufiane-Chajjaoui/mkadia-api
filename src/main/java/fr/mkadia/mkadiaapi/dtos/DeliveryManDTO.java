@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class DeliveryManDTO {
-    private Integer id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;

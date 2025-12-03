@@ -1,5 +1,5 @@
 CREATE TABLE users (
-      user_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+      user_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       firstname VARCHAR(255) NOT NULL,
       lastname VARCHAR(255) NOT NULL,
       email VARCHAR(255) NOT NULL UNIQUE,
@@ -11,7 +11,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE roles (
-      role_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+      role_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       label VARCHAR(255) NOT NULL,
       is_default BOOLEAN NOT NULL DEFAULT FALSE,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -19,20 +19,20 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE tokens (
-      id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+      id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
       token VARCHAR(300) NOT NULL,
       revoked BOOLEAN NOT NULL,
       expired BOOLEAN NOT NULL,
       token_type VARCHAR(255) NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-      user_id INT,
+      user_id BIGINT,
       CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
 CREATE TABLE users_roles (
-      user_id INT NOT NULL,
-      role_id INT NOT NULL,
+      user_id BIGINT NOT NULL,
+      role_id BIGINT NOT NULL,
       PRIMARY KEY (user_id, role_id),
       CONSTRAINT fk_user_role_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
       CONSTRAINT fk_user_role_role FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE

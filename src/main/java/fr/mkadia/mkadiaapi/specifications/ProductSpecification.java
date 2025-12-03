@@ -14,7 +14,7 @@ public class ProductSpecification {
 
     public static Specification<Product> filterProducts(
             String search,
-            Integer categoryId,
+            Long categoryId,
             BigDecimal minPrice,
             BigDecimal maxPrice,
             String status,

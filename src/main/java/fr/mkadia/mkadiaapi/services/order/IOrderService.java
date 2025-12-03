@@ -15,11 +15,11 @@ import java.util.Optional;
 
 public interface IOrderService {
     OrderDTO createOrder(CheckoutRequest checkoutRequest);
-    Optional<AdminOrderDTO> getOrderDetails(Integer orderId);
-    OrderDTO getOrder(Integer orderId);
-    OrderDTO updateOrderStatus(Integer orderId, OrderStatus orderStatus);
+    Optional<AdminOrderDTO> getOrderDetails(Long orderId);
+    OrderDTO getOrder(Long orderId);
+    OrderDTO updateOrderStatus(Long orderId, OrderStatus orderStatus);
     ElementsOfPageDTO<AdminOrderDTO> getOrders(BigDecimal minAmount, BigDecimal maxAmount, String status, String paymentStatus, String paymentMethod, String client, LocalDate createAfter, LocalDate createBefore, Pageable pageable);
     ElementsOfPageDTO<ClientOrderDTO> getClientOrders(User user, int page, int size);
-    ClientOrderDTO getClientOrderDetails(Integer id);
-    ResponseMessage setDeliveryAssigned(Integer orderId, DeliveryManDTO request);
+    ClientOrderDTO getClientOrderDetails(Long id);
+    ResponseMessage setDeliveryAssigned(Long orderId, DeliveryManDTO request);
 }

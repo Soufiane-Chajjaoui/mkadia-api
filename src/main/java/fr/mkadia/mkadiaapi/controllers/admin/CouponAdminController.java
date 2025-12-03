@@ -36,7 +36,7 @@ public class CouponAdminController {
      * 📌 Récupérer un coupon par ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CouponDTO> getCouponById(@PathVariable Integer id) {
+    public ResponseEntity<CouponDTO> getCouponById(@PathVariable Long id) {
         return couponService.getCouponById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -57,7 +57,7 @@ public class CouponAdminController {
      * 🔄 Mettre à jour un coupon existant
      */
     @PutMapping("/{id}")
-    public ResponseEntity<CouponDTO> updateCoupon(@PathVariable Integer id, @RequestBody CouponDTO couponDTO) {
+    public ResponseEntity<CouponDTO> updateCoupon(@PathVariable Long id, @RequestBody CouponDTO couponDTO) {
         return couponRepository.findById(id)
                 .map(existing -> {
                     Coupon updated = couponMapper.fromDTO(couponDTO);
@@ -72,7 +72,7 @@ public class CouponAdminController {
      * 🗑 Supprimer un coupon
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCoupon(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
         if (couponRepository.existsById(id)) {
             couponRepository.deleteById(id);
             return ResponseEntity.noContent().build();

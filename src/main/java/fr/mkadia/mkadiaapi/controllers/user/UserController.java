@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/order/{id}")
-    public ResponseEntity<ClientOrderDTO> getOrder(@PathVariable Integer id) {
+    public ResponseEntity<ClientOrderDTO> getOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.getClientOrderDetails(id));
     }
 }

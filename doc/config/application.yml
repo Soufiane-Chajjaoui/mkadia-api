@@ -30,6 +30,7 @@ spring:
     check-template-location: true
   docker:
     compose:
+      file: docker-compose.api.yml
       lifecycle-management: start_and_stop
   servlet:
     multipart:
@@ -129,5 +130,5 @@ minio:
     secret-key: minioadmin
     url: http://localhost:9000
     bucket:
-      name: mkadia-objects
+      name: mkadia-media
     put-object-part-size: 5242880 #value in bytes (minimum is 5 MB equivalent)

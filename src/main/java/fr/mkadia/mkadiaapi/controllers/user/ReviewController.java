@@ -16,7 +16,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping
-    public ResponseEntity<ElementsOfPageDTO<ReviewDTO>> getReviews(@RequestParam Integer productId,
+    public ResponseEntity<ElementsOfPageDTO<ReviewDTO>> getReviews(@RequestParam Long productId,
                                                                        @RequestParam(name = "page" , defaultValue = "0") int page,
                                                                        @RequestParam(name = "size" , defaultValue = "5")int size) {
         return ResponseEntity.ok(reviewService.getReviews(productId, page, size));
@@ -27,7 +27,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteReview(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteReview(@PathVariable Long id) {
         return ResponseEntity.ok(reviewService.deleteReview(id));
     }
 }

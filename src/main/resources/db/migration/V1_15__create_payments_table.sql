@@ -1,7 +1,7 @@
 CREATE TABLE payments
 (
-    payment_id     INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    order_id       INT            NOT NULL,
+    payment_id     BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    order_id       BIGINT NOT NULL,
     amount         NUMERIC(10, 2) NOT NULL CHECK (amount >= 0),
     payment_method VARCHAR(50)    NOT NULL,
     payment_status VARCHAR(50)    NOT NULL,

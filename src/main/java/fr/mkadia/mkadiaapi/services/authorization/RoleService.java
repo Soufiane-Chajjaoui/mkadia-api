@@ -57,7 +57,7 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public Optional<RoleDTO> getRole(Integer idRole) {
+    public Optional<RoleDTO> getRole(Long idRole) {
 
         Role role = roleRepository.findById(idRole)
                 .orElseThrow(
@@ -73,7 +73,7 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public Optional<ResponseOperation<Boolean>> deleteRole(Integer idRole) {
+    public Optional<ResponseOperation<Boolean>> deleteRole(Long idRole) {
         try {
             roleRepository.deleteById(idRole);
             return Optional.of(
@@ -86,7 +86,7 @@ public class RoleService implements IRoleService{
     }
 
     @Override
-    public Optional<List<RoleDTO>> getRolesByIDs(List<Integer> IDs) {
+    public Optional<List<RoleDTO>> getRolesByIDs(List<Long> IDs) {
 
         return Optional.of(
                 roleRepository.findAllByIdIn(IDs)

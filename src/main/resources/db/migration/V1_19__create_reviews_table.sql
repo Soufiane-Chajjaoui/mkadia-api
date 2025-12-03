@@ -1,8 +1,8 @@
 CREATE TABLE reviews
 (
-    id         INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id    INT    NOT NULL,
-    product_id INT    NOT NULL,
+    id         BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id    BIGINT    NOT NULL,
+    product_id BIGINT    NOT NULL,
     comment    TEXT,
     rating     INTEGER,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

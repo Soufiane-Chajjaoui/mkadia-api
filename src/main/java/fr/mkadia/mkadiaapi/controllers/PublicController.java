@@ -37,12 +37,12 @@ public class PublicController {
                                                    @RequestParam(name = "page", defaultValue = "0")int page,
                                                    @RequestParam(name = "stock", defaultValue = "1")int stock,
                                                    @RequestParam(name = "size", defaultValue = "5")int size,
-                                                   @RequestParam(name = "category")Integer categoryId) {
+                                                   @RequestParam(name = "category")Long categoryId) {
         return ResponseEntity.of(productService.getProductsByCategory(status, page, size, stock, categoryId));
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable(name = "id")int id){
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable(name = "id")Long id){
         return ResponseEntity.of(productService.getProduct(id));
     }
 }

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class CouponDTO {
-    private Integer id;
+    private Long id;
     private String code;
     private DiscountType discountType;
     private BigDecimal discountValue;

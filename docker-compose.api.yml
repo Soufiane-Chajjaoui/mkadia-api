@@ -1,9 +1,8 @@
-version: '3.9'
 name: mkadia-platform
 services:
   postgres:
     image: 'postgres:latest'
-    container_name: mkadia-api-postgres
+    container_name: mkadia-postgres
     environment:
       - 'POSTGRES_DB=mkadia-db'
       - 'POSTGRES_PASSWORD=soufianch'
@@ -11,9 +10,9 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - mkadia-api-postgres-data:/var/lib/postgresql/data
+      - mkadia-postgres-data:/var/lib/postgresql
     networks:
-      - mkadia-api-net
+      - mkadia-net
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -22,7 +21,7 @@ services:
 
   pgadmin:
     image: 'dpage/pgadmin4:latest'
-    container_name: mkadia-api-pgadmin
+    container_name: mkadia-pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@gmail.com
       PGADMIN_DEFAULT_PASSWORD: soufianch
@@ -30,29 +29,44 @@ services:
     ports:
       - '5050:5050'
     networks:
-      - mkadia-api-net
+      - mkadia-net
 
   minio:
     image: minio/minio:latest
-    container_name: mkadia-api-minio
+    container_name: mkadia-minio
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
-      MINIO_DEFAULT_BUCKETS: mkadia-objects
     ports:
       - '9000:9000'
       - '9001:9001'
     volumes:
-      - mkadia-api-minio-data:/data
+      - mkadia-minio-data:/data
     command: server /data --console-address ":9001"
     restart: always
     networks:
-      - mkadia-api-net
+      - mkadia-net
+
+  mc:
+    image: minio/mc:latest
+    container_name: mkadia-mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+        sleep 5 &&
+        mc alias set mk http://minio:9000 minioadmin minioadmin &&
+        mc mb mk/mkadia-media || true &&
+        mc mb mk/mkadia-lakehouse || true &&
+        tail -f /dev/null
+      "
+    networks:
+      - mkadia-net
 
 volumes:
-  mkadia-api-postgres-data:
-  mkadia-api-minio-data:
+  mkadia-postgres-data:
+  mkadia-minio-data:
 
 networks:
-  mkadia-api-net:
-    name: mkadia-api-net
+  mkadia-net:
+    name: mkadia-net

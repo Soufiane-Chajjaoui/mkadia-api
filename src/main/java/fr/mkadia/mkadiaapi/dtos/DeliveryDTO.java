@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeliveryDTO {
-    private Integer id;
+    private Long id;
     private OrderDTO order;
     private DeliveryStatus status;
     private AddressDTO address;

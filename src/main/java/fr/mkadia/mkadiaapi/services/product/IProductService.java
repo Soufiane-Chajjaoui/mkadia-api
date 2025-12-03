@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface IProductService {
 
     Optional<ElementsOfPageDTO<ProductDTO>> getProducts(String search,
-                                                        Integer categoryId,
+                                                        Long categoryId,
                                                         BigDecimal minPrice,
                                                         BigDecimal maxPrice,
                                                         String status,
@@ -33,9 +33,9 @@ public interface IProductService {
 
     Optional<ResponseOperation<ProductDTO>> saveProduct(ProductDTO productDTO, List<MultipartFile> files);
 
-    Optional<ProductDTO> getProduct(Integer id);
+    Optional<ProductDTO> getProduct(Long id);
 
-    Optional<ResponseMessage> deleteProduct(Integer id);
+    Optional<ResponseMessage> deleteProduct(Long id);
 
 
     @Transactional
@@ -43,5 +43,5 @@ public interface IProductService {
                                                           List<MultipartFile> files,
                                                           List<String> existingUrls);
 
-    Optional<?> getProductsByCategory(String status, int page, int size, int stock, Integer categoryId);
+    Optional<?> getProductsByCategory(String status, int page, int size, int stock, Long categoryId);
 }

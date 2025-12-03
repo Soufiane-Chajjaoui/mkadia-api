@@ -10,7 +10,7 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
-public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
+public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
-    Page<Favorite> findByUserId(Integer userId, Pageable pageable);
+    Page<Favorite> findByUserId(Long userId, Pageable pageable);
 }
